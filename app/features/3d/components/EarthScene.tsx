@@ -133,7 +133,6 @@ const EarthScene = ({
           rotateSpeed={0.1}
           zoomSpeed={0.4}
           minDistance={2.7}
-          maxDistance={10}
           enableDamping={false}
         />
       </>

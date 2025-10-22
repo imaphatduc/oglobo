@@ -4,6 +4,8 @@ import { toGlobeCoords } from "../utils/toGlobeCoords";
 import { Color, Euler, Matrix4, Vector3 } from "three";
 import { GeoFeature } from "@/app/types";
 import { Text } from "@react-three/drei";
+import { useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
 
 interface Props {
   country: GeoFeature;
@@ -38,10 +40,28 @@ const NameTag = ({ country, scaleFactor, color, hovering }: Props) => {
   const matrix = new Matrix4().makeBasis(tangent, adjustedUp, normal);
   const rotation = new Euler().setFromRotationMatrix(matrix);
 
+  const textRef = useRef<Text>(null);
+
+  const { camera } = useThree();
+
+  useFrame(() => {
+    if (!textRef.current) return;
+
+    // Compute distance between camera and text
+    // @ts-expect-error
+    const camDistance = camera.position.distanceTo(textRef.current.position);
+    // Adjust scale so that text appears fixed on screen
+    const scale = camDistance * 0.02; // tweak constant to match desired pixel size
+    // @ts-expect-error
+    textRef.current.scale.set(scale, scale, scale);
+  });
+
   return (
     (countryArea > 200000000000 || hovering) && (
       <Text
-        fontSize={0.05}
+        ref={textRef}
+        maxWidth={10}
+        fontSize={1.5}
         position={centerPoint}
         rotation={rotation}
         anchorX="center"
@@ -49,7 +69,7 @@ const NameTag = ({ country, scaleFactor, color, hovering }: Props) => {
         color={new Color(color).multiplyScalar(hovering ? 1 : 0.3)}
         fontWeight={"bold"}
         strokeColor={"black"}
-        strokeWidth={0.002}
+        strokeWidth={0.1}
         outlineBlur={0.005}
       >
         {country.properties.NAME_VI}
