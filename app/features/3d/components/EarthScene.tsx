@@ -129,7 +129,13 @@ const EarthScene = ({
           </group>
         ))}
         <Starfield ref={starfieldRef} numStars={numStars} />
-        <OrbitControls />
+        <OrbitControls
+          rotateSpeed={0.1}
+          zoomSpeed={0.4}
+          minDistance={2.7}
+          maxDistance={10}
+          enableDamping={false}
+        />
       </>
     )
   );
