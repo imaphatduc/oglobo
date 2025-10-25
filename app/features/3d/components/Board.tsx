@@ -1,5 +1,7 @@
 import { GeoFeature } from "@/app/types";
 import { MessageCircle, Ruler, Star, Users } from "lucide-react";
+import ToggleButton from "./ToggleButton";
+import { useState } from "react";
 
 interface Props {
   selectedCountry: GeoFeature;
@@ -10,8 +12,18 @@ const Board = ({ selectedCountry }: Props) => {
     properties: { FLAG, CAPITALS, OFFICIAL_LANGUAGES, POPULATION, AREA },
   } = selectedCountry;
 
+  const [showCountryLabels, setShowCountryLabels] = useState(false);
+
   return (
     <div className="space-y-8">
+      <div className="grid grid-cols-2 gap-5 justify-between text-sm">
+        <p>Show country labels</p>
+        <ToggleButton
+          checked={showCountryLabels}
+          onChange={setShowCountryLabels}
+        />
+      </div>
+
       <div className="flex flex-col items-center space-y-5">
         {FLAG && (
           <img

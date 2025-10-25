@@ -6,23 +6,21 @@ import {
   DoubleSide,
   Float32BufferAttribute,
 } from "three";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import NameTag from "./NameTag";
 import earcut from "earcut";
+import { useUI } from "../../contexts/UIContext";
 
 interface Props {
   onRendered: () => void;
+  countries: GeoFeature[];
   country: GeoFeature;
-  selectedCountry?: GeoFeature;
   scaleFactor: number;
 }
 
-const Country3D = ({
-  onRendered,
-  country,
-  selectedCountry,
-  scaleFactor,
-}: Props) => {
+const Country3D = ({ onRendered, countries, country, scaleFactor }: Props) => {
+  const { selectedCountryIdx } = useUI();
+
   useEffect(() => {
     onRendered();
   }, []);
@@ -51,8 +49,9 @@ const Country3D = ({
   const [hovering, setHovering] = useState(false);
 
   const renderedColor = new Color(country.properties.COLOR).multiplyScalar(
-    country.properties.WIKIDATAID === selectedCountry?.properties.WIKIDATAID ||
-      hovering
+    country.properties.WIKIDATAID ===
+      (selectedCountryIdx ? countries[selectedCountryIdx] : undefined)
+        ?.properties.WIKIDATAID || hovering
       ? 0.3
       : 1
   );

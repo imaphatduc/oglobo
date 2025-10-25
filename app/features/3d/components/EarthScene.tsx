@@ -2,7 +2,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { GeoFeature } from "@/app/types";
 import Globe from "./Globe";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CountryBorder3D from "./CountryBorder3D";
 import { Color, Points, Raycaster } from "three";
 import { toGeoCoords } from "../utils";
@@ -10,22 +10,15 @@ import Country3D from "./Country3D";
 import { booleanPointInPolygon } from "@turf/turf";
 import { Easing, Group, Tween } from "@tweenjs/tween.js";
 import Starfield from "./Starfield";
+import { useUI } from "../../contexts/UIContext";
 
 interface Props {
-  screenLoaded: boolean;
-  setScreenLoaded: (d: boolean) => void;
   countries: GeoFeature[];
-  selectedCountry?: GeoFeature;
-  setHoveredCountry: (d?: number) => void;
 }
 
-const EarthScene = ({
-  screenLoaded,
-  setScreenLoaded,
-  countries,
-  selectedCountry,
-  setHoveredCountry,
-}: Props) => {
+const EarthScene = ({ countries }: Props) => {
+  const { screenLoaded, setScreenLoaded, setSelectedCountryIdx } = useUI();
+
   const scaleFactor = 2.5;
 
   const globeRef = useRef(null);
@@ -37,7 +30,7 @@ const EarthScene = ({
   const selectCountry = () => {
     if (!globeRef.current) return;
 
-    const getSelectedCountry = (lon: number, lat: number) =>
+    const getSelectedCountryIdx = (lon: number, lat: number) =>
       countries.findIndex((country) =>
         booleanPointInPolygon([lon, lat], country)
       );
@@ -49,10 +42,10 @@ const EarthScene = ({
     if (intersects.length > 0) {
       const point = intersects[0].point;
       const [lon, lat] = toGeoCoords(point);
-      const selectedCountry = getSelectedCountry(lon, lat);
+      const selectedCountryIdx = getSelectedCountryIdx(lon, lat);
 
-      if (selectedCountry) {
-        setHoveredCountry(selectedCountry);
+      if (selectedCountryIdx) {
+        setSelectedCountryIdx(selectedCountryIdx);
       }
     }
   };
@@ -122,8 +115,8 @@ const EarthScene = ({
             <CountryBorder3D country={country} scaleFactor={scaleFactor} />
             <Country3D
               onRendered={onCountriesRendered}
+              countries={countries}
               country={country}
-              selectedCountry={selectedCountry}
               scaleFactor={scaleFactor}
             />
           </group>
