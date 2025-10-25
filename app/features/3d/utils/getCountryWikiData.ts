@@ -1,4 +1,5 @@
 import { GeoFeature } from "@/app/types";
+import { CONTINENTS, REGIONS } from "@/app/utils/constants";
 
 const getFlag = (P41: any[]) => {
   const preferredFlag = P41.find((flag: any) => flag.rank === "preferred");
@@ -58,18 +59,37 @@ const getExternals = async (P: any[]) => {
 
 export const getCountryWikiData = async (id: string) => {
   const url = `https://www.wikidata.org/wiki/Special:EntityData/${id}.json`;
-  const res = await fetch(url);
 
-  const { entities } = await res.json();
-  const { claims } = entities[id];
   let flag: GeoFeature["properties"]["FLAG"];
+  let continent: GeoFeature["properties"]["CONTINENT"];
+  let regions: GeoFeature["properties"]["REGIONS"];
   let area: GeoFeature["properties"]["AREA"];
   let capitals: GeoFeature["properties"]["CAPITALS"];
   let officialLanguages: GeoFeature["properties"]["OFFICIAL_LANGUAGES"];
   let population: GeoFeature["properties"]["POPULATION"];
 
   try {
+    const res = await fetch(url);
+    const { entities } = await res.json();
+    const { claims } = entities[id];
+
     flag = claims.P41 && getFlag(claims.P41);
+
+    const rawContinents = claims.P30 && (await getExternals(claims.P30));
+    continent =
+      rawContinents &&
+      rawContinents.find((info: any) =>
+        Object.keys(CONTINENTS)
+          .map((c) => c.toLowerCase())
+          .includes(info.vi.toLowerCase())
+      ).vi;
+
+    const rawRegions = claims.P361 ? await getExternals(claims.P361) : [];
+    regions = rawRegions
+      .map((info) => info.vi ?? info.en)
+      .filter((info) =>
+        REGIONS.map((r) => r.toLowerCase()).includes(info.toLowerCase())
+      );
 
     const rawCapitals = claims.P36 ? await getExternals(claims.P36) : [];
     const preferredRawCapitals = rawCapitals.filter(
@@ -98,6 +118,8 @@ export const getCountryWikiData = async (id: string) => {
     population = claims.P1082 && getPopulation(claims.P1082);
   } catch {
     flag = undefined;
+    continent = undefined;
+    regions = [];
     capitals = [];
     officialLanguages = [];
     area = undefined;
@@ -106,6 +128,8 @@ export const getCountryWikiData = async (id: string) => {
 
   const wikiData = {
     flag,
+    continent,
+    regions,
     area,
     population,
     capitals,

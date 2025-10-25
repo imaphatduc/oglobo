@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from "fs";
 import { getCountriesColors, getCountryWikiData } from "../features/3d/utils";
-import { GeoData } from "../type/GeoData.type";
+import { GeoData } from "../types/GeoData.type";
 
 export const initGeoData = async () => {
   const file = readFileSync("./geodata/ne_50m_admin_0_countries.json", "utf8");
@@ -36,6 +36,8 @@ export const initGeoData = async () => {
           SOVEREIGNT: feature.properties.SOVEREIGNT,
           TYPE: feature.properties.TYPE,
           FLAG: wikiData.flag,
+          CONTINENT: wikiData.continent,
+          REGIONS: wikiData.regions,
           AREA: wikiData.area,
           POPULATION: wikiData.population,
           CAPITALS: wikiData.capitals,

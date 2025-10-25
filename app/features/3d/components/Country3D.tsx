@@ -23,6 +23,10 @@ const Country3D = ({
   selectedCountry,
   scaleFactor,
 }: Props) => {
+  if (country.properties.WIKIDATAID === "Q884") {
+    console.log(country.properties);
+  }
+
   useEffect(() => {
     onRendered();
   }, []);

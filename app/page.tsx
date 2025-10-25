@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import { GeoData } from "./type/GeoData.type";
+import { GeoData } from "./types/GeoData.type";
 import { Screen3D } from "./features/3d";
 import { initGeoData } from "./utils/initGeoData";
 

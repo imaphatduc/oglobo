@@ -1,4 +1,4 @@
-import { GeoFeature } from "../types";
+import { GeoFeature } from "./GeoFeature.type";
 
 export type GeoData = {
   type: "FeatureCollection";

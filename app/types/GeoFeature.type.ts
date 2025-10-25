@@ -10,6 +10,8 @@ export type GeoFeature = {
     SOVEREIGNT: string;
     TYPE: string;
     FLAG?: string;
+    CONTINENT?: string;
+    REGIONS?: string[];
     AREA?: number;
     POPULATION?: {
       value: number;
