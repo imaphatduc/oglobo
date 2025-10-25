@@ -3813,6 +3813,11 @@ lru-cache@^10.2.0:
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-10.4.3.tgz#410fc8a17b70e598013df257c2446b7f3383f119"
   integrity sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==
 
+lucide-react@^0.548.0:
+  version "0.548.0"
+  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.548.0.tgz#14db954aea4d6e5c0ae9cbb107cdeb86197922e6"
+  integrity sha512-63b16z63jM9yc1MwxajHeuu0FRZFsDtljtDjYm26Kd86UQ5HQzu9ksEtoUUw4RBuewodw/tGFmvipePvRsKeDA==
+
 maath@^0.10.8:
   version "0.10.8"
   resolved "https://registry.yarnpkg.com/maath/-/maath-0.10.8.tgz#cf647544430141bf6982da6e878abb6c4b804e24"
