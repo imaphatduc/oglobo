@@ -2,7 +2,7 @@ import { readFileSync } from "fs";
 import { GeoData } from "./types/GeoData.type";
 import { Screen3D } from "./features/3d";
 import { initGeoData } from "./utils/initGeoData";
-import { UIProvider } from "./features/contexts/UIContext";
+import { UIProvider } from "./features/ui/contexts/UIContext";
 
 export default async function Home() {
   // await initGeoData();

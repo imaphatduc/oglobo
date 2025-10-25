@@ -2,17 +2,16 @@
 
 import { Canvas } from "@react-three/fiber";
 import { GeoFeature } from "@/app/types";
-import Board from "./Board";
+import { Panel, useUI } from "../../ui";
 import EarthScene from "./EarthScene";
 import LoadingScreen from "./LoadingScreen";
-import { useUI } from "../../contexts/UIContext";
 
 interface Props {
   features: GeoFeature[];
 }
 
 const Screen3D = ({ features: countries }: Props) => {
-  const { screenLoaded, selectedCountryIdx } = useUI();
+  const { screenLoaded } = useUI();
 
   return (
     <div className="flex justify-between">
@@ -22,13 +21,7 @@ const Screen3D = ({ features: countries }: Props) => {
           <EarthScene countries={countries} />
         </Canvas>
       </div>
-      <div className="w-[30rem] p-3 relative">
-        <div className="sticky top-3 bottom-3 bg-neutral-800 text-white w-full h-[calc(100vh-1.5rem)] overflow-auto rounded-md p-8">
-          {selectedCountryIdx && countries[selectedCountryIdx] && (
-            <Board selectedCountry={countries[selectedCountryIdx]} />
-          )}
-        </div>
-      </div>
+      <Panel countries={countries} />
     </div>
   );
 };

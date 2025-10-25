@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, use, useState, ReactNode } from "react";
 
 interface UIContextType {
   selectedCountryIdx?: number;
@@ -14,7 +14,7 @@ interface UIContextType {
 const UIContext = createContext<UIContextType | undefined>(undefined);
 
 export function useUI() {
-  const context = useContext(UIContext);
+  const context = use(UIContext);
   if (context === undefined) {
     throw new Error("useUI must be used within a UIProvider");
   }
@@ -30,7 +30,7 @@ export function UIProvider({ children }: UIProviderProps) {
 
   const [screenLoaded, setScreenLoaded] = useState(false);
 
-  const [showCountryNames, setShowCountryNames] = useState(true);
+  const [showCountryNames, setShowCountryNames] = useState(false);
 
   const toggleCountryNames = () => {
     setShowCountryNames((prev) => !prev);

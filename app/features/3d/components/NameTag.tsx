@@ -1,3 +1,5 @@
+"use client";
+
 import { area, centroid } from "@turf/turf";
 import { uniformCoords } from "../utils/uniformCoords";
 import { toGlobeCoords } from "../utils/toGlobeCoords";
@@ -6,7 +8,7 @@ import { GeoFeature } from "@/app/types";
 import { Text } from "@react-three/drei";
 import { useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useUI } from "../../contexts/UIContext";
+import { useUI } from "../../ui";
 
 interface Props {
   country: GeoFeature;

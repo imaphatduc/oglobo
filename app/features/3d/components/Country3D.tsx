@@ -1,3 +1,5 @@
+"use client";
+
 import { GeoFeature } from "@/app/types";
 import { toGlobeCoords, uniformCoords } from "../utils";
 import {
@@ -9,7 +11,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import NameTag from "./NameTag";
 import earcut from "earcut";
-import { useUI } from "../../contexts/UIContext";
+import { useUI } from "../../ui";
 
 interface Props {
   onRendered: () => void;

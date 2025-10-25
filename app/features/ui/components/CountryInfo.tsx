@@ -1,29 +1,17 @@
 import { GeoFeature } from "@/app/types";
 import { MessageCircle, Ruler, Star, Users } from "lucide-react";
-import ToggleButton from "./ToggleButton";
-import { useUI } from "../../contexts/UIContext";
 
 interface Props {
   selectedCountry: GeoFeature;
 }
 
-const Board = ({ selectedCountry }: Props) => {
+const CountryInfo = ({ selectedCountry }: Props) => {
   const {
     properties: { FLAG, CAPITALS, OFFICIAL_LANGUAGES, POPULATION, AREA },
   } = selectedCountry;
 
-  const { showCountryNames, toggleCountryNames } = useUI();
-
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-2 gap-5 justify-between text-sm">
-        <p>Show country names</p>
-        <ToggleButton
-          checked={showCountryNames}
-          onChange={toggleCountryNames}
-        />
-      </div>
-
       <div className="flex flex-col items-center space-y-5">
         {FLAG && (
           <img
@@ -76,4 +64,4 @@ const Board = ({ selectedCountry }: Props) => {
   );
 };
 
-export default Board;
+export default CountryInfo;

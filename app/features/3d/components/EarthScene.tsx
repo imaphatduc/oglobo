@@ -1,3 +1,5 @@
+"use client";
+
 import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { GeoFeature } from "@/app/types";
@@ -10,7 +12,7 @@ import Country3D from "./Country3D";
 import { booleanPointInPolygon } from "@turf/turf";
 import { Easing, Group, Tween } from "@tweenjs/tween.js";
 import Starfield from "./Starfield";
-import { useUI } from "../../contexts/UIContext";
+import { useUI } from "../../ui";
 
 interface Props {
   countries: GeoFeature[];
