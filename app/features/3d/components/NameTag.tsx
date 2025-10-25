@@ -1,20 +1,22 @@
 import { area, centroid } from "@turf/turf";
 import { uniformCoords } from "../utils/uniformCoords";
 import { toGlobeCoords } from "../utils/toGlobeCoords";
-import { Color, Euler, Matrix4, Vector3 } from "three";
+import { Euler, Matrix4, Vector3 } from "three";
 import { GeoFeature } from "@/app/types";
 import { Text } from "@react-three/drei";
 import { useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
+import { useUI } from "../../contexts/UIContext";
 
 interface Props {
   country: GeoFeature;
   scaleFactor: number;
-  color: string;
   hovering: boolean;
 }
 
-const NameTag = ({ country, scaleFactor, color, hovering }: Props) => {
+const NameTag = ({ country, scaleFactor, hovering }: Props) => {
+  const { showCountryNames } = useUI();
+
   const uniformedCountry = uniformCoords(country);
 
   let countryArea = 0;
@@ -57,7 +59,7 @@ const NameTag = ({ country, scaleFactor, color, hovering }: Props) => {
   });
 
   return (
-    (countryArea > 200000000000 || hovering) && (
+    ((showCountryNames && countryArea > 200000000000) || hovering) && (
       <Text
         ref={textRef}
         maxWidth={10}
@@ -66,10 +68,8 @@ const NameTag = ({ country, scaleFactor, color, hovering }: Props) => {
         rotation={rotation}
         anchorX="center"
         anchorY="middle"
-        color={new Color(color).multiplyScalar(hovering ? 1 : 0.3)}
         fontWeight={"bold"}
-        strokeColor={"black"}
-        strokeWidth={0.1}
+        color={"black"}
         outlineBlur={0.005}
       >
         {country.properties.NAME_VI}

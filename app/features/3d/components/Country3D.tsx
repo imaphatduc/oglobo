@@ -6,7 +6,7 @@ import {
   DoubleSide,
   Float32BufferAttribute,
 } from "three";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import NameTag from "./NameTag";
 import earcut from "earcut";
 import { useUI } from "../../contexts/UIContext";
@@ -64,7 +64,6 @@ const Country3D = ({ onRendered, countries, country, scaleFactor }: Props) => {
       <NameTag
         country={country}
         scaleFactor={scaleFactor}
-        color={country.properties.COLOR}
         hovering={hovering}
       />
       {geometries.map((geometry, i) => (
