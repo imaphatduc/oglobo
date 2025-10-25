@@ -36,7 +36,7 @@ export const initGeoData = async () => {
           SOVEREIGNT: feature.properties.SOVEREIGNT,
           TYPE: feature.properties.TYPE,
           FLAG: wikiData.flag,
-          CONTINENT: wikiData.continent,
+          CONTINENTS: wikiData.continents,
           REGIONS: wikiData.regions,
           AREA: wikiData.area,
           POPULATION: wikiData.population,
