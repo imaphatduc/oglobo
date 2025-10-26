@@ -1,5 +1,5 @@
-import Panel from "./components/Panel";
+import Infographic from "./components/Infographic";
 import Control from "./components/Control";
 import { UIProvider, useUI } from "./contexts/UIContext";
 
-export { Panel, Control, UIProvider, useUI };
+export { Infographic, Control, UIProvider, useUI };

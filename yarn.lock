@@ -4308,6 +4308,11 @@ react-reconciler@^0.31.0:
   dependencies:
     scheduler "^0.25.0"
 
+react-resizable-panels@^3.0.6:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/react-resizable-panels/-/react-resizable-panels-3.0.6.tgz#8183132ea13a09821e9c93962ed49f240cdcfd3f"
+  integrity sha512-b3qKHQ3MLqOgSS+FRYKapNkJZf5EQzuf6+RLiq1/IlTHw99YrZ2NJZLk4hQIzTnnIkRg2LUqyVinu6YWWpUYew==
+
 react-spinners@^0.15.0:
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/react-spinners/-/react-spinners-0.15.0.tgz#bb9536a3839ab4e1513bb98847d79cc1fc930b93"

@@ -2,9 +2,10 @@
 
 import { Canvas } from "@react-three/fiber";
 import { GeoFeature } from "@/app/types";
-import { Panel, Control, useUI } from "../../ui";
+import { Infographic, Control, useUI } from "../../ui";
 import EarthScene from "./EarthScene";
 import LoadingScreen from "./LoadingScreen";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 interface Props {
   features: GeoFeature[];
@@ -14,21 +15,27 @@ const Screen3D = ({ features: countries }: Props) => {
   const { screenLoaded } = useUI();
 
   return (
-    <div className="flex justify-between">
+    <div className="">
       {screenLoaded && (
         <div className="absolute top-3 left-3 z-10">
           <Control />
         </div>
       )}
 
-      <div className="w-full h-screen relative">
-        {<LoadingScreen screenLoaded={screenLoaded} />}
-        <Canvas>
-          <EarthScene countries={countries} />
-        </Canvas>
-      </div>
+      <PanelGroup direction="horizontal">
+        <Panel className="">
+          {<LoadingScreen screenLoaded={screenLoaded} />}
+          <Canvas>
+            <EarthScene countries={countries} />
+          </Canvas>
+        </Panel>
 
-      <Panel countries={countries} />
+        <PanelResizeHandle className="my-auto w-1 h-8 rounded-full bg-neutral-400 hover:bg-neutral-600 focus:bg-neutral-600" />
+
+        <Panel defaultSize={30} minSize={30}>
+          <Infographic countries={countries} />
+        </Panel>
+      </PanelGroup>
     </div>
   );
 };
