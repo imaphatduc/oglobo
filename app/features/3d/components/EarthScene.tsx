@@ -21,6 +21,7 @@ interface Props {
 const EarthScene = ({ countries }: Props) => {
   const {
     selectedContinent,
+    setSelectedContinent,
     screenLoaded,
     setScreenLoaded,
     setSelectedCountryIdx,
