@@ -6,6 +6,9 @@ import { Infographic, Control, useUI } from "../../ui";
 import EarthScene from "./EarthScene";
 import LoadingScreen from "./LoadingScreen";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { useState } from "react";
+import { ChevronsLeft, ChevronsRight } from "lucide-react";
+import { useMediaQuery } from "react-responsive";
 
 interface Props {
   features: GeoFeature[];
@@ -13,6 +16,10 @@ interface Props {
 
 const Screen3D = ({ features: countries }: Props) => {
   const { screenLoaded } = useUI();
+
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+
+  const [showInfographic, setShowInfographic] = useState(true);
 
   return (
     <div className="">
@@ -22,21 +29,32 @@ const Screen3D = ({ features: countries }: Props) => {
         </div>
       )}
 
-      <PanelGroup direction="horizontal">
-        <Panel className="">
-          {<LoadingScreen screenLoaded={screenLoaded} />}
+      <PanelGroup className="relative" direction="horizontal">
+        <Panel className="h-screen relative">
+          <LoadingScreen screenLoaded={screenLoaded} />
           <Canvas>
             <EarthScene countries={countries} />
           </Canvas>
         </Panel>
 
-        <PanelResizeHandle className="w-5 my-auto">
-          <div className="w-1 h-8 mx-auto rounded-full bg-neutral-400 hover:bg-neutral-600 focus:bg-neutral-600"></div>
-        </PanelResizeHandle>
+        <button
+          className="sticky z-20 top-8 right-8 h-fit p-1 rounded-md hover:bg-neutral-600"
+          onClick={() => setShowInfographic(!showInfographic)}
+        >
+          {showInfographic ? <ChevronsRight /> : <ChevronsLeft />}
+        </button>
 
-        <Panel defaultSize={30} minSize={30}>
-          <Infographic countries={countries} />
-        </Panel>
+        {showInfographic && (
+          <PanelResizeHandle className="w-5 my-auto">
+            <div className="w-1 h-8 mx-auto rounded-full bg-neutral-400 hover:bg-neutral-600 focus:bg-neutral-600"></div>
+          </PanelResizeHandle>
+        )}
+
+        {showInfographic && (
+          <Panel defaultSize={30} minSize={30}>
+            <Infographic countries={countries} />
+          </Panel>
+        )}
       </PanelGroup>
     </div>
   );

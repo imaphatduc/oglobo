@@ -2,7 +2,6 @@ import { GeoFeature } from "@/app/types";
 import { useUI } from "../contexts/UIContext";
 import CountryInfo from "./CountryInfo";
 import CountriesList from "./CountriesList";
-import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 
 interface Props {
