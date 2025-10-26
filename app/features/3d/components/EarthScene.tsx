@@ -19,7 +19,12 @@ interface Props {
 }
 
 const EarthScene = ({ countries }: Props) => {
-  const { screenLoaded, setScreenLoaded, setSelectedCountryIdx } = useUI();
+  const {
+    selectedContinent,
+    screenLoaded,
+    setScreenLoaded,
+    setSelectedCountryIdx,
+  } = useUI();
 
   const scaleFactor = 2.5;
 
@@ -112,17 +117,23 @@ const EarthScene = ({ countries }: Props) => {
         <ambientLight intensity={1} />
         <directionalLight position={[5, 3, 5]} intensity={1} />
         <Globe ref={globeRef} scaleFactor={scaleFactor} />
-        {countries.map((country, i) => (
-          <group key={i} onClick={selectCountry}>
-            <CountryBorder3D country={country} scaleFactor={scaleFactor} />
-            <Country3D
-              onRendered={onCountriesRendered}
-              countries={countries}
-              country={country}
-              scaleFactor={scaleFactor}
-            />
-          </group>
-        ))}
+        {countries.map(
+          (country, i) =>
+            (selectedContinent === "" ||
+              country.properties.CONTINENTS?.map((c) =>
+                c.toLowerCase()
+              ).includes(selectedContinent.toLowerCase())) && (
+              <group key={i} onClick={selectCountry}>
+                <CountryBorder3D country={country} scaleFactor={scaleFactor} />
+                <Country3D
+                  onRendered={onCountriesRendered}
+                  countries={countries}
+                  country={country}
+                  scaleFactor={scaleFactor}
+                />
+              </group>
+            )
+        )}
         <Starfield ref={starfieldRef} numStars={numStars} />
         <OrbitControls
           rotateSpeed={0.1}

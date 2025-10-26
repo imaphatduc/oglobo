@@ -3,6 +3,8 @@
 import { createContext, use, useState, ReactNode } from "react";
 
 interface UIContextType {
+  selectedContinent: string;
+  setSelectedContinent: (d: string) => void;
   selectedCountryIdx?: number;
   setSelectedCountryIdx: (d?: number) => void;
   screenLoaded: boolean;
@@ -26,6 +28,8 @@ interface UIProviderProps {
 }
 
 export function UIProvider({ children }: UIProviderProps) {
+  const [selectedContinent, setSelectedContinent] = useState("");
+
   const [selectedCountryIdx, setSelectedCountryIdx] = useState<number>();
 
   const [screenLoaded, setScreenLoaded] = useState(false);
@@ -37,6 +41,8 @@ export function UIProvider({ children }: UIProviderProps) {
   };
 
   const value = {
+    selectedContinent,
+    setSelectedContinent,
     selectedCountryIdx,
     setSelectedCountryIdx,
     screenLoaded,
