@@ -11,7 +11,7 @@ const Infographic = ({ countries }: Props) => {
   const { selectedCountryIdx } = useUI();
 
   return (
-    <div className="p-3">
+    <div className="p-3 pl-0">
       <div className="bg-neutral-800 text-white w-full h-[calc(100vh-1.5rem)] overflow-auto rounded-md p-8">
         <CountriesList countries={countries} />
         {selectedCountryIdx && countries[selectedCountryIdx] && (

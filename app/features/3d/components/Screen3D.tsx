@@ -30,7 +30,9 @@ const Screen3D = ({ features: countries }: Props) => {
           </Canvas>
         </Panel>
 
-        <PanelResizeHandle className="my-auto w-1 h-8 rounded-full bg-neutral-400 hover:bg-neutral-600 focus:bg-neutral-600" />
+        <PanelResizeHandle className="w-5 my-auto">
+          <div className="w-1 h-8 mx-auto rounded-full bg-neutral-400 hover:bg-neutral-600 focus:bg-neutral-600"></div>
+        </PanelResizeHandle>
 
         <Panel defaultSize={30} minSize={30}>
           <Infographic countries={countries} />
