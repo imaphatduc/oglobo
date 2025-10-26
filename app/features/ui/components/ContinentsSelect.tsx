@@ -7,7 +7,7 @@ const ContinentsSelect = () => {
   return (
     <>
       <label htmlFor="mySelect" className="block mb-2 text-sm font-medium">
-        Choose continents:
+        Hiện châu lục
       </label>
 
       <select
