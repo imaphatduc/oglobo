@@ -7,7 +7,12 @@ import EarthScene from "./EarthScene";
 import LoadingScreen from "./LoadingScreen";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useState } from "react";
-import { ChevronsLeft, ChevronsRight } from "lucide-react";
+import {
+  ChevronsDown,
+  ChevronsLeft,
+  ChevronsRight,
+  ChevronsUp,
+} from "lucide-react";
 import { useMediaQuery } from "react-responsive";
 
 interface Props {
@@ -22,36 +27,49 @@ const Screen3D = ({ features: countries }: Props) => {
   const [showInfographic, setShowInfographic] = useState(true);
 
   return (
-    <div className="">
+    <div className="h-screen">
       {screenLoaded && (
         <div className="absolute top-3 left-3 z-10">
           <Control />
         </div>
       )}
 
-      <PanelGroup className="relative" direction="horizontal">
+      <PanelGroup
+        className="relative"
+        direction={isMobile ? "vertical" : "horizontal"}
+      >
         <Panel className="h-screen relative">
-          <LoadingScreen screenLoaded={screenLoaded} />
+          {!screenLoaded && <LoadingScreen screenLoaded={screenLoaded} />}
           <Canvas>
             <EarthScene countries={countries} />
           </Canvas>
         </Panel>
 
         <button
-          className="sticky z-20 top-8 right-8 h-fit p-1 rounded-md hover:bg-neutral-600"
+          className="sticky z-20 top-8 right-8 w-fit h-fit ml-2 mb-2 md:m-0 p-1 rounded-md hover:bg-neutral-600"
           onClick={() => setShowInfographic(!showInfographic)}
         >
-          {showInfographic ? <ChevronsRight /> : <ChevronsLeft />}
+          {isMobile ? (
+            showInfographic ? (
+              <ChevronsDown />
+            ) : (
+              <ChevronsUp />
+            )
+          ) : showInfographic ? (
+            <ChevronsRight />
+          ) : (
+            <ChevronsLeft />
+          )}
         </button>
 
         {showInfographic && (
-          <PanelResizeHandle className="w-5 my-auto">
-            <div className="w-1 h-8 mx-auto rounded-full bg-neutral-400 hover:bg-neutral-600 focus:bg-neutral-600"></div>
+          <PanelResizeHandle className="w-5 m-auto">
+            <div className="h-1 w-8 md:w-1 md:h-8 m-auto rounded-full bg-neutral-400 hover:bg-neutral-600 focus:bg-neutral-600"></div>
           </PanelResizeHandle>
         )}
 
         {showInfographic && (
-          <Panel defaultSize={30} minSize={30}>
+          <Panel defaultSize={isMobile ? 35 : 28} minSize={isMobile ? 15 : 28}>
             <Infographic countries={countries} />
           </Panel>
         )}

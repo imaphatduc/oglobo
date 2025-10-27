@@ -13,17 +13,17 @@ const Infographic = ({ countries }: Props) => {
     useUI();
 
   return (
-    <div className="relative p-3 pl-0">
+    <div className="relative pt-3 md:p-3 md:pl-0 h-full">
       {selectedCountryIdx && (
         <button
-          className="absolute top-0 left-0 mx-6 my-8 p-1 rounded-md hover:bg-neutral-600"
+          className="absolute md:top-0 md:left-0 mx-2 my-2 md:mx-6 md:my-8 p-1 rounded-md hover:bg-neutral-600"
           onClick={() => setSelectedCountryIdx(undefined)}
         >
           <ArrowLeft />
         </button>
       )}
 
-      <div className="bg-neutral-800 text-white w-full h-[calc(100vh-1.5rem)] overflow-auto rounded-md p-8">
+      <div className="bg-neutral-800 text-white h-full overflow-auto md:rounded-md p-8">
         {selectedCountryIdx && countries[selectedCountryIdx] ? (
           <CountryInfo selectedCountry={countries[selectedCountryIdx]} />
         ) : (

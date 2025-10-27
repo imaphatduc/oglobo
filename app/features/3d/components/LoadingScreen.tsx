@@ -10,13 +10,13 @@ interface Props {
 const LoadingScreen = ({ screenLoaded }: Props) => {
   const [timedout, setTimedout] = useState(false);
 
-  useEffect(() => {
-    if (screenLoaded) {
-      setTimeout(() => {
-        setTimedout(true);
-      }, 500);
-    }
-  }, [screenLoaded]);
+  // useEffect(() => {
+  //   if (screenLoaded) {
+  //     setTimeout(() => {
+  //       setTimedout(true);
+  //     }, 500);
+  //   }
+  // }, [screenLoaded]);
 
   return (
     !timedout && (
