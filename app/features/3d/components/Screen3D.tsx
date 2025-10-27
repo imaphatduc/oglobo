@@ -29,7 +29,7 @@ const Screen3D = ({ features: countries }: Props) => {
   return (
     <div className="h-screen">
       {screenLoaded && (
-        <div className="absolute top-3 left-3 z-10">
+        <div className="absolute top-0 left-0 z-10">
           <Control />
         </div>
       )}

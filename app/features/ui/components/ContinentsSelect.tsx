@@ -6,7 +6,7 @@ const ContinentsSelect = () => {
 
   return (
     <>
-      <label htmlFor="mySelect" className="block mb-2 text-sm font-medium">
+      <label htmlFor="mySelect" className="block mb-2 font-medium">
         Hiện châu lục
       </label>
 
@@ -15,7 +15,7 @@ const ContinentsSelect = () => {
         value={selectedContinent}
         defaultValue=""
         onChange={(e) => setSelectedContinent(e.target.value)}
-        className="block px-2 py-2 rounded-sm shadow-sm bg-neutral-600 h-fit focus:ring-0 focus:outline-none"
+        className="block px-2 py-2 rounded-md shadow-md bg-neutral-600 h-fit focus:ring-0 focus:outline-none"
       >
         <option value="">Tất cả</option>
         {Object.keys(CONTINENTS).map((continent, i) => (
