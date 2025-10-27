@@ -175,12 +175,10 @@ const EarthScene = ({ countries }: Props) => {
     if (!sceneLoaded || !cameraInit) return;
 
     const tween = new Tween(camera.position)
-      .to(
-        { x: cameraInitPos[0], y: cameraInitPos[1], z: cameraInitPos[2] },
-        2000
-      )
+      .to({ x: cameraInitPos[0], y: cameraInitPos[1], z: cameraInitPos[2] })
       .easing(Easing.Exponential.Out)
       .delay(600)
+      .duration(2000)
       .start();
 
     group.add(tween);
