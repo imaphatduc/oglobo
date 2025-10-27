@@ -6,13 +6,14 @@ import { GeoFeature } from "@/app/types";
 import Globe from "./Globe";
 import { useCallback, useEffect, useRef, useState } from "react";
 import CountryBorder3D from "./CountryBorder3D";
-import { Color, Points, Raycaster, Vector2 } from "three";
-import { toGeoCoords } from "../utils";
+import { Color, Points, Raycaster, Vector2, Vector3 } from "three";
+import { toGeoCoords, toGlobeCoords } from "../utils";
 import Country3D from "./Country3D";
 import { booleanPointInPolygon } from "@turf/turf";
 import { Easing, Group, Tween } from "@tweenjs/tween.js";
 import Starfield from "./Starfield";
 import { useUI } from "../../ui";
+import { useSearchParams } from "next/navigation";
 
 interface Props {
   countries: GeoFeature[];
@@ -31,6 +32,8 @@ const EarthScene = ({ countries }: Props) => {
   const globeRef = useRef(null);
 
   const { camera, pointer } = useThree();
+
+  const searchParams = useSearchParams();
 
   const controlsRef = useRef<any>(null);
 
@@ -110,8 +113,6 @@ const EarthScene = ({ countries }: Props) => {
   }, [controlsRef, handleLocationChange]);
 
   useFrame(({ clock }) => {
-    //////////////////////
-
     group.update();
 
     if (!starfieldRef.current) return;
@@ -152,10 +153,23 @@ const EarthScene = ({ countries }: Props) => {
 
   useEffect(() => {
     if (!screenLoaded || !cameraInit) return;
+
+    const lon = parseFloat(searchParams.get("lon") || "0");
+    const lat = parseFloat(searchParams.get("lat") || "0");
+    const coords = toGlobeCoords(lon, lat, scaleFactor);
+    const magnitude = new Vector3(...coords).length();
+
+    const cameraInitPos = {
+      x: (5 * coords[0]) / magnitude,
+      y: (5 * coords[1]) / magnitude,
+      z: (5 * coords[2]) / magnitude,
+    };
+
     const tween = new Tween(camera.position)
-      .to({ x: 0, y: 0, z: 5 }, 2000)
+      .to(cameraInitPos, 2000)
       .easing(Easing.Exponential.Out)
       .start();
+
     group.add(tween);
   }, [screenLoaded, cameraInit]);
 
