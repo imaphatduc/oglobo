@@ -7,8 +7,8 @@ interface UIContextType {
   setSelectedContinent: (d: string) => void;
   selectedCountryIdx?: number;
   setSelectedCountryIdx: (d?: number) => void;
-  screenLoaded: boolean;
-  setScreenLoaded: (d: boolean) => void;
+  sceneLoaded: boolean;
+  setSceneLoaded: (d: boolean) => void;
   showCountryNames: boolean;
   toggleCountryNames: () => void;
 }
@@ -32,7 +32,7 @@ export function UIProvider({ children }: UIProviderProps) {
 
   const [selectedCountryIdx, setSelectedCountryIdx] = useState<number>();
 
-  const [screenLoaded, setScreenLoaded] = useState(false);
+  const [sceneLoaded, setSceneLoaded] = useState(false);
 
   const [showCountryNames, setShowCountryNames] = useState(false);
 
@@ -45,8 +45,8 @@ export function UIProvider({ children }: UIProviderProps) {
     setSelectedContinent,
     selectedCountryIdx,
     setSelectedCountryIdx,
-    screenLoaded,
-    setScreenLoaded,
+    sceneLoaded,
+    setSceneLoaded,
     showCountryNames,
     toggleCountryNames,
   };

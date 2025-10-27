@@ -4,7 +4,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { GeoFeature } from "@/app/types";
 import Globe from "./Globe";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CountryBorder3D from "./CountryBorder3D";
 import { Color, Points, Raycaster, Vector2, Vector3 } from "three";
 import { toGeoCoords, toGlobeCoords } from "../utils";
@@ -22,8 +22,8 @@ interface Props {
 const EarthScene = ({ countries }: Props) => {
   const {
     selectedContinent,
-    screenLoaded,
-    setScreenLoaded,
+    sceneLoaded,
+    setSceneLoaded,
     setSelectedCountryIdx,
   } = useUI();
 
@@ -142,36 +142,49 @@ const EarthScene = ({ countries }: Props) => {
   const onCountriesRendered = () => {
     numRenderedCountry.current += 1;
     if (numRenderedCountry.current === countries.length) {
-      setScreenLoaded(true);
+      setSceneLoaded(true);
     }
   };
 
-  useEffect(() => {
-    camera.position.set(0, 0, 200);
-    setCameraInit(true);
-  }, []);
-
-  useEffect(() => {
-    if (!screenLoaded || !cameraInit) return;
-
+  const cameraInitPos = useMemo(() => {
     const lon = parseFloat(searchParams.get("lon") || "0");
     const lat = parseFloat(searchParams.get("lat") || "0");
     const coords = toGlobeCoords(lon, lat, scaleFactor);
     const magnitude = new Vector3(...coords).length();
 
-    const cameraInitPos = {
-      x: (5 * coords[0]) / magnitude,
-      y: (5 * coords[1]) / magnitude,
-      z: (5 * coords[2]) / magnitude,
-    };
+    const cameraInitPos = [
+      (5 * coords[0]) / magnitude,
+      (5 * coords[1]) / magnitude,
+      (5 * coords[2]) / magnitude,
+    ] as [number, number, number];
+
+    return cameraInitPos;
+  }, []);
+
+  useEffect(() => {
+    camera.position.set(
+      cameraInitPos[0] * 200,
+      cameraInitPos[1] * 200,
+      cameraInitPos[2] * 200
+    );
+
+    setCameraInit(true);
+  }, []);
+
+  useEffect(() => {
+    if (!sceneLoaded || !cameraInit) return;
 
     const tween = new Tween(camera.position)
-      .to(cameraInitPos, 2000)
+      .to(
+        { x: cameraInitPos[0], y: cameraInitPos[1], z: cameraInitPos[2] },
+        2000
+      )
       .easing(Easing.Exponential.Out)
+      .delay(600)
       .start();
 
     group.add(tween);
-  }, [screenLoaded, cameraInit]);
+  }, [sceneLoaded, cameraInit]);
 
   return (
     cameraInit && (

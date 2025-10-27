@@ -20,7 +20,7 @@ interface Props {
 }
 
 const App = ({ features: countries }: Props) => {
-  const { screenLoaded } = useUI();
+  const { sceneLoaded } = useUI();
 
   const [mounted, setMounted] = useState(false);
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
@@ -37,7 +37,7 @@ const App = ({ features: countries }: Props) => {
 
   return (
     <div className="h-screen">
-      {screenLoaded && (
+      {sceneLoaded && (
         <div className="absolute top-0 left-0 z-10">
           <Control />
         </div>
@@ -48,7 +48,7 @@ const App = ({ features: countries }: Props) => {
         direction={isMobile ? "vertical" : "horizontal"}
       >
         <Panel className="h-screen relative">
-          {!screenLoaded && <LoadingScreen screenLoaded={screenLoaded} />}
+          <LoadingScreen sceneLoaded={sceneLoaded} />
           <Canvas>
             <EarthScene countries={countries} />
           </Canvas>
