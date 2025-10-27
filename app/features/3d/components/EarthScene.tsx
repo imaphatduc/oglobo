@@ -5,29 +5,21 @@ import { OrbitControls } from "@react-three/drei";
 import { GeoFeature } from "@/app/types";
 import Globe from "./Globe";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import CountryBorder from "./CountryBorder";
 import { Clock, Color, Points, Raycaster, Vector2, Vector3 } from "three";
 import { toGeoCoords, toGlobeCoords } from "../utils";
-import CountryMesh from "./CountryMesh";
 import { Easing, Group, Tween } from "@tweenjs/tween.js";
 import Starfield from "./Starfield";
 import { useUI } from "../../ui";
 import { useSearchParams } from "next/navigation";
-import { booleanPointInPolygon } from "@turf/turf";
-import { getRaycastPoint } from "../utils/getRaycastPoint";
 import Countries from "./Countries";
+import { booleanPointInPolygon } from "@turf/turf";
 
 interface Props {
   countries: GeoFeature[];
 }
 
 const EarthScene = ({ countries }: Props) => {
-  const {
-    selectedContinent,
-    sceneLoaded,
-    setSceneLoaded,
-    setSelectedCountryIdx,
-  } = useUI();
+  const { sceneLoaded, setSelectedCountryIdx } = useUI();
 
   const scaleFactor = 2.5;
 
@@ -48,20 +40,48 @@ const EarthScene = ({ countries }: Props) => {
   const starfieldRef = useRef<Points>(null);
 
   ///////////////////////////////
+
+  const getRaycastPoint = (from: Vector2) => {
+    if (!globeRef.current) return;
+
+    raycaster.setFromCamera(from, camera);
+
+    const intersects = raycaster.intersectObject(globeRef.current);
+
+    if (intersects.length > 0) {
+      const point = intersects[0].point;
+      const [lon, lat] = toGeoCoords(point);
+      return [lon, lat] as [number, number];
+    }
+  };
+
+  const selectCountry = () => {
+    const point = getRaycastPoint(pointer);
+
+    if (point) {
+      const [lon, lat] = point;
+
+      const selectedCountryIdx = countries.findIndex((country) =>
+        booleanPointInPolygon([lon, lat], country)
+      );
+
+      if (selectedCountryIdx) {
+        setSelectedCountryIdx(selectedCountryIdx);
+      }
+    }
+  };
+
+  ///////////////////////////////
   /// EARTH NAVIGATION CONTROL
   ///////////////////////////////
 
   const saveLocationWhileNavigating = useCallback(() => {
     if (!globeRef.current || !camera) return;
 
-    const point = getRaycastPoint(
-      new Vector2(0, 0),
-      globeRef,
-      raycaster,
-      camera
-    );
+    const point = getRaycastPoint(new Vector2(0, 0));
 
     if (point) {
+      console.log(point);
       const [lon, lat] = point;
 
       const params = new URLSearchParams(window.location.search);
@@ -188,7 +208,7 @@ const EarthScene = ({ countries }: Props) => {
         <Countries
           countries={countries}
           scaleFactor={scaleFactor}
-          raycastPoint={getRaycastPoint(pointer, globeRef, raycaster, camera)}
+          selectCountry={selectCountry}
         />
         <Starfield ref={starfieldRef} numStars={numStars} />
         <OrbitControls

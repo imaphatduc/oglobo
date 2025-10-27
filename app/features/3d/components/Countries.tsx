@@ -3,20 +3,15 @@ import CountryBorder from "./CountryBorder";
 import CountryMesh from "./CountryMesh";
 import { useUI } from "../../ui";
 import { useRef } from "react";
-import { booleanPointInPolygon } from "@turf/turf";
 
 interface Props {
   countries: GeoFeature[];
   scaleFactor: number;
-  raycastPoint?: [number, number];
+  selectCountry: () => void;
 }
 
-const Countries = ({ countries, scaleFactor, raycastPoint }: Props) => {
-  const { selectedContinent, setSelectedCountryIdx, setSceneLoaded } = useUI();
-
-  ///////////////////////////////
-  /// RENDERING
-  ///////////////////////////////
+const Countries = ({ countries, scaleFactor, selectCountry }: Props) => {
+  const { selectedContinent, setSceneLoaded } = useUI();
 
   const numRenderedCountry = useRef(0);
 
@@ -24,24 +19,6 @@ const Countries = ({ countries, scaleFactor, raycastPoint }: Props) => {
     numRenderedCountry.current += 1;
     if (numRenderedCountry.current === countries.length) {
       setSceneLoaded(true);
-    }
-  };
-
-  ///////////////////////////////
-  /// SELECTION
-  ///////////////////////////////
-
-  const selectCountry = () => {
-    if (raycastPoint) {
-      const [lon, lat] = raycastPoint;
-
-      const selectedCountryIdx = countries.findIndex((country) =>
-        booleanPointInPolygon([lon, lat], country)
-      );
-
-      if (selectedCountryIdx) {
-        setSelectedCountryIdx(selectedCountryIdx);
-      }
     }
   };
 
