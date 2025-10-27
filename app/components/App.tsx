@@ -2,8 +2,8 @@
 
 import { Canvas } from "@react-three/fiber";
 import { GeoFeature } from "@/app/types";
-import { Infographic, Control, useUI } from "../../ui";
-import EarthScene from "./EarthScene";
+import { Infographic, Control, useUI } from "../features/ui";
+import { EarthScene } from "../features/3d";
 import LoadingScreen from "./LoadingScreen";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useEffect, useState } from "react";
@@ -19,7 +19,7 @@ interface Props {
   features: GeoFeature[];
 }
 
-const Screen3D = ({ features: countries }: Props) => {
+const App = ({ features: countries }: Props) => {
   const { screenLoaded } = useUI();
 
   const [mounted, setMounted] = useState(false);
@@ -87,4 +87,4 @@ const Screen3D = ({ features: countries }: Props) => {
   );
 };
 
-export default Screen3D;
+export default App;

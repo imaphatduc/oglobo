@@ -1,8 +1,8 @@
 import { readFileSync } from "fs";
 import { GeoData } from "./types/GeoData.type";
-import { Screen3D } from "./features/3d";
+import App from "./components/App";
 import { initGeoData } from "./utils/initGeoData";
-import { UIProvider } from "./features/ui/contexts/UIContext";
+import { UIProvider } from "./features/ui";
 
 export default async function Home() {
   // await initGeoData();
@@ -14,7 +14,7 @@ export default async function Home() {
   return (
     <main>
       <UIProvider>
-        <Screen3D features={features} />
+        <App features={features} />
       </UIProvider>
     </main>
   );

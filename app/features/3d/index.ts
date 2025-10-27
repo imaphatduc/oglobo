@@ -1,3 +1,3 @@
-import { Screen3D } from "./components";
+import EarthScene from "./components/EarthScene";
 
-export { Screen3D };
+export { EarthScene };
