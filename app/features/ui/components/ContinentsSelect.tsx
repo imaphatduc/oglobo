@@ -13,7 +13,6 @@ const ContinentsSelect = () => {
       <select
         id="continents-select"
         value={selectedContinent}
-        defaultValue=""
         onChange={(e) => setSelectedContinent(e.target.value)}
         className="block px-2 py-2 rounded-md shadow-md bg-neutral-600 h-fit focus:ring-0 focus:outline-none"
       >

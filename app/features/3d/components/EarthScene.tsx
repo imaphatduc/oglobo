@@ -4,9 +4,9 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { GeoFeature } from "@/app/types";
 import Globe from "./Globe";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import CountryBorder3D from "./CountryBorder3D";
-import { Color, Points, Raycaster } from "three";
+import { Color, Points, Raycaster, Vector2 } from "three";
 import { toGeoCoords } from "../utils";
 import Country3D from "./Country3D";
 import { booleanPointInPolygon } from "@turf/turf";
@@ -21,7 +21,6 @@ interface Props {
 const EarthScene = ({ countries }: Props) => {
   const {
     selectedContinent,
-    setSelectedContinent,
     screenLoaded,
     setScreenLoaded,
     setSelectedCountryIdx,
@@ -31,25 +30,37 @@ const EarthScene = ({ countries }: Props) => {
 
   const globeRef = useRef(null);
 
-  const { camera, mouse } = useThree();
+  const { camera, pointer } = useThree();
+
+  const controlsRef = useRef<any>(null);
 
   const raycaster = new Raycaster();
 
-  const selectCountry = () => {
+  const getRaycastPoint = (from: Vector2) => {
     if (!globeRef.current) return;
 
-    const getSelectedCountryIdx = (lon: number, lat: number) =>
-      countries.findIndex((country) =>
-        booleanPointInPolygon([lon, lat], country)
-      );
-
-    raycaster.setFromCamera(mouse, camera);
+    raycaster.setFromCamera(from, camera);
 
     const intersects = raycaster.intersectObject(globeRef.current);
 
     if (intersects.length > 0) {
       const point = intersects[0].point;
       const [lon, lat] = toGeoCoords(point);
+      return [lon, lat] as [number, number];
+    }
+  };
+
+  const selectCountry = () => {
+    const point = getRaycastPoint(pointer);
+
+    const getSelectedCountryIdx = (lon: number, lat: number) =>
+      countries.findIndex((country) =>
+        booleanPointInPolygon([lon, lat], country)
+      );
+
+    if (point) {
+      const [lon, lat] = point;
+
       const selectedCountryIdx = getSelectedCountryIdx(lon, lat);
 
       if (selectedCountryIdx) {
@@ -64,7 +75,43 @@ const EarthScene = ({ countries }: Props) => {
 
   const starfieldRef = useRef<Points>(null);
 
+  const handleLocationChange = useCallback(() => {
+    if (!globeRef.current || !camera) return;
+
+    const point = getRaycastPoint(new Vector2(0, 0));
+
+    if (point) {
+      const [lon, lat] = point;
+
+      const params = new URLSearchParams(window.location.search);
+      params.set("lon", lon.toFixed(4));
+      params.set("lat", lat.toFixed(4));
+
+      // Update URL without triggering Next.js navigation
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+
+      try {
+        window.history.replaceState({}, "", newUrl);
+      } catch (e) {
+        console.error("Failed to update URL:", e);
+      }
+    }
+  }, [camera, getRaycastPoint]);
+
+  useEffect(() => {
+    const controls = controlsRef.current;
+    if (!controls) return;
+
+    controls.addEventListener("end", handleLocationChange);
+
+    return () => {
+      controls.removeEventListener("end", handleLocationChange);
+    };
+  }, [controlsRef, handleLocationChange]);
+
   useFrame(({ clock }) => {
+    //////////////////////
+
     group.update();
 
     if (!starfieldRef.current) return;
@@ -137,8 +184,9 @@ const EarthScene = ({ countries }: Props) => {
         )}
         <Starfield ref={starfieldRef} numStars={numStars} />
         <OrbitControls
+          ref={controlsRef}
           rotateSpeed={0.1}
-          zoomSpeed={0.4}
+          zoomSpeed={0.8}
           minDistance={2.7}
           enableDamping={false}
         />
