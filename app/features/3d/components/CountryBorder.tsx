@@ -8,7 +8,7 @@ interface Props {
   scaleFactor: number;
 }
 
-const CountryBorder3D = ({ country, scaleFactor }: Props) => {
+const CountryBorder = ({ country, scaleFactor }: Props) => {
   const boundary = useMemo(
     () =>
       uniformCoords(country).map((land) =>
@@ -26,4 +26,4 @@ const CountryBorder3D = ({ country, scaleFactor }: Props) => {
   );
 };
 
-export default CountryBorder3D;
+export default CountryBorder;

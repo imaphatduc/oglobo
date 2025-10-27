@@ -20,7 +20,12 @@ interface Props {
   scaleFactor: number;
 }
 
-const Country3D = ({ onRendered, countries, country, scaleFactor }: Props) => {
+const CountryMesh = ({
+  onRendered,
+  countries,
+  country,
+  scaleFactor,
+}: Props) => {
   const { selectedCountryIdx } = useUI();
 
   useEffect(() => {
@@ -77,4 +82,4 @@ const Country3D = ({ onRendered, countries, country, scaleFactor }: Props) => {
   );
 };
 
-export default Country3D;
+export default CountryMesh;

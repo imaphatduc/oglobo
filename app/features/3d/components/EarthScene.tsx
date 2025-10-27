@@ -5,15 +5,17 @@ import { OrbitControls } from "@react-three/drei";
 import { GeoFeature } from "@/app/types";
 import Globe from "./Globe";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import CountryBorder3D from "./CountryBorder3D";
-import { Color, Points, Raycaster, Vector2, Vector3 } from "three";
+import CountryBorder from "./CountryBorder";
+import { Clock, Color, Points, Raycaster, Vector2, Vector3 } from "three";
 import { toGeoCoords, toGlobeCoords } from "../utils";
-import Country3D from "./Country3D";
-import { booleanPointInPolygon } from "@turf/turf";
+import CountryMesh from "./CountryMesh";
 import { Easing, Group, Tween } from "@tweenjs/tween.js";
 import Starfield from "./Starfield";
 import { useUI } from "../../ui";
 import { useSearchParams } from "next/navigation";
+import { booleanPointInPolygon } from "@turf/turf";
+import { getRaycastPoint } from "../utils/getRaycastPoint";
+import Countries from "./Countries";
 
 interface Props {
   countries: GeoFeature[];
@@ -39,49 +41,25 @@ const EarthScene = ({ countries }: Props) => {
 
   const raycaster = new Raycaster();
 
-  const getRaycastPoint = (from: Vector2) => {
-    if (!globeRef.current) return;
-
-    raycaster.setFromCamera(from, camera);
-
-    const intersects = raycaster.intersectObject(globeRef.current);
-
-    if (intersects.length > 0) {
-      const point = intersects[0].point;
-      const [lon, lat] = toGeoCoords(point);
-      return [lon, lat] as [number, number];
-    }
-  };
-
-  const selectCountry = () => {
-    const point = getRaycastPoint(pointer);
-
-    const getSelectedCountryIdx = (lon: number, lat: number) =>
-      countries.findIndex((country) =>
-        booleanPointInPolygon([lon, lat], country)
-      );
-
-    if (point) {
-      const [lon, lat] = point;
-
-      const selectedCountryIdx = getSelectedCountryIdx(lon, lat);
-
-      if (selectedCountryIdx) {
-        setSelectedCountryIdx(selectedCountryIdx);
-      }
-    }
-  };
-
   const group = new Group();
 
   const numStars = 2000;
 
   const starfieldRef = useRef<Points>(null);
 
-  const handleLocationChange = useCallback(() => {
+  ///////////////////////////////
+  /// EARTH NAVIGATION CONTROL
+  ///////////////////////////////
+
+  const saveLocationWhileNavigating = useCallback(() => {
     if (!globeRef.current || !camera) return;
 
-    const point = getRaycastPoint(new Vector2(0, 0));
+    const point = getRaycastPoint(
+      new Vector2(0, 0),
+      globeRef,
+      raycaster,
+      camera
+    );
 
     if (point) {
       const [lon, lat] = point;
@@ -90,7 +68,7 @@ const EarthScene = ({ countries }: Props) => {
       params.set("lon", lon.toFixed(4));
       params.set("lat", lat.toFixed(4));
 
-      // Update URL without triggering Next.js navigation
+      // Update URL without triggering Next.js navigation/re-rendering
       const newUrl = `${window.location.pathname}?${params.toString()}`;
 
       try {
@@ -101,20 +79,24 @@ const EarthScene = ({ countries }: Props) => {
     }
   }, [camera, getRaycastPoint]);
 
-  useEffect(() => {
+  const handleLocationChange = () => {
     const controls = controlsRef.current;
     if (!controls) return;
 
-    controls.addEventListener("end", handleLocationChange);
+    controls.addEventListener("end", saveLocationWhileNavigating);
 
     return () => {
-      controls.removeEventListener("end", handleLocationChange);
+      controls.removeEventListener("end", saveLocationWhileNavigating);
     };
-  }, [controlsRef, handleLocationChange]);
+  };
 
-  useFrame(({ clock }) => {
-    group.update();
+  useEffect(handleLocationChange, [controlsRef, saveLocationWhileNavigating]);
 
+  ///////////////////////////////
+  /// STARFIELD FLICKERING ANIMATION
+  ///////////////////////////////
+
+  const flickeringStarfield = (clock: Clock) => {
     if (!starfieldRef.current) return;
 
     const t = clock.elapsedTime;
@@ -133,18 +115,19 @@ const EarthScene = ({ countries }: Props) => {
     }
 
     starfieldRef.current.geometry.attributes.color.needsUpdate = true;
+  };
+
+  useFrame(({ clock }) => {
+    group.update();
+
+    flickeringStarfield(clock);
   });
 
-  const numRenderedCountry = useRef(0);
+  ///////////////////////////////
+  /// CAMERA INITIALIZATION
+  ///////////////////////////////
 
   const [cameraInit, setCameraInit] = useState(false);
-
-  const onCountriesRendered = () => {
-    numRenderedCountry.current += 1;
-    if (numRenderedCountry.current === countries.length) {
-      setSceneLoaded(true);
-    }
-  };
 
   const cameraInitPos = useMemo(() => {
     const lon = parseFloat(searchParams.get("lon") || "0");
@@ -161,7 +144,7 @@ const EarthScene = ({ countries }: Props) => {
     return cameraInitPos;
   }, []);
 
-  useEffect(() => {
+  const setupCamera = () => {
     camera.position.set(
       cameraInitPos[0] * 200,
       cameraInitPos[1] * 200,
@@ -169,11 +152,17 @@ const EarthScene = ({ countries }: Props) => {
     );
 
     setCameraInit(true);
-  }, []);
+  };
 
   useEffect(() => {
-    if (!sceneLoaded || !cameraInit) return;
+    setupCamera();
+  }, []);
 
+  ///////////////////////////////
+  /// EARTH ZOOMING INTRO
+  ///////////////////////////////
+
+  const animateSceneIntro = () => {
     const tween = new Tween(camera.position)
       .to({ x: cameraInitPos[0], y: cameraInitPos[1], z: cameraInitPos[2] })
       .easing(Easing.Exponential.Out)
@@ -182,6 +171,12 @@ const EarthScene = ({ countries }: Props) => {
       .start();
 
     group.add(tween);
+  };
+
+  useEffect(() => {
+    if (!sceneLoaded || !cameraInit) return;
+
+    animateSceneIntro();
   }, [sceneLoaded, cameraInit]);
 
   return (
@@ -190,23 +185,11 @@ const EarthScene = ({ countries }: Props) => {
         <ambientLight intensity={1} />
         <directionalLight position={[5, 3, 5]} intensity={1} />
         <Globe ref={globeRef} scaleFactor={scaleFactor} />
-        {countries.map(
-          (country, i) =>
-            (selectedContinent === "" ||
-              country.properties.CONTINENTS?.map((c) =>
-                c.toLowerCase()
-              ).includes(selectedContinent.toLowerCase())) && (
-              <group key={i} onClick={selectCountry}>
-                <CountryBorder3D country={country} scaleFactor={scaleFactor} />
-                <Country3D
-                  onRendered={onCountriesRendered}
-                  countries={countries}
-                  country={country}
-                  scaleFactor={scaleFactor}
-                />
-              </group>
-            )
-        )}
+        <Countries
+          countries={countries}
+          scaleFactor={scaleFactor}
+          raycastPoint={getRaycastPoint(pointer, globeRef, raycaster, camera)}
+        />
         <Starfield ref={starfieldRef} numStars={numStars} />
         <OrbitControls
           ref={controlsRef}

@@ -10,7 +10,6 @@ interface Props {
 const LoadingScreen = ({ sceneLoaded }: Props) => {
   const [timedout, setTimedout] = useState(false);
 
-  console.log(sceneLoaded);
   useEffect(() => {
     if (sceneLoaded) {
       setTimeout(() => {
