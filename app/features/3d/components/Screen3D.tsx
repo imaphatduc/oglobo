@@ -22,7 +22,7 @@ interface Props {
 const Screen3D = ({ features: countries }: Props) => {
   const { screenLoaded } = useUI();
 
-  const isMobile = useMediaQuery({ maxWidth: 768 });
+  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
 
   const [showInfographic, setShowInfographic] = useState(true);
 
