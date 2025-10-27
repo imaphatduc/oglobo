@@ -6,7 +6,7 @@ import { Infographic, Control, useUI } from "../../ui";
 import EarthScene from "./EarthScene";
 import LoadingScreen from "./LoadingScreen";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ChevronsDown,
   ChevronsLeft,
@@ -22,9 +22,18 @@ interface Props {
 const Screen3D = ({ features: countries }: Props) => {
   const { screenLoaded } = useUI();
 
+  const [mounted, setMounted] = useState(false);
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
 
   const [showInfographic, setShowInfographic] = useState(true);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className="h-screen">
