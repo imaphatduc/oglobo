@@ -55,7 +55,7 @@ const App = ({ features: countries }: Props) => {
         </Panel>
 
         <button
-          className="sticky z-20 top-8 right-8 w-fit h-fit ml-2 mb-2 md:m-0 p-1 rounded-md hover:bg-neutral-600"
+          className="sticky z-20 top-8 right-8 w-fit h-fit m-2 md:ml-2 p-1 rounded-md hover:bg-neutral-600"
           onClick={() => setShowInfographic(!showInfographic)}
         >
           {isMobile ? (

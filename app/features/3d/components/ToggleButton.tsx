@@ -19,9 +19,9 @@ const ToggleButton = ({ checked, onChange, disabled }: Props) => {
     >
       <span
         className={`
-          inline-block h-5 w-5 transform rounded-full bg-white shadow 
+          inline-block h-4 w-4 transform rounded-full bg-white shadow 
           transition-transform duration-300 ease-in-out
-          ${checked ? "translate-x-5" : "translate-x-1"}
+          ${checked ? "translate-x-6" : "translate-x-1"}
         `}
       />
     </button>
