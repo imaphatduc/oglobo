@@ -1,4 +1,4 @@
-import React, { Ref, useMemo } from "react";
+import { memo, Ref, useMemo } from "react";
 import { AdditiveBlending, Points, TextureLoader } from "three";
 import getStarfield from "../utils/getStarfield";
 
@@ -8,7 +8,7 @@ interface Props {
 }
 
 const Starfield = ({ ref, numStars }: Props) => {
-  const { vertices, colors } = useMemo(() => getStarfield({ numStars }), []);
+  const { vertices, colors } = getStarfield({ numStars });
 
   return (
     <points ref={ref}>
@@ -34,4 +34,4 @@ const Starfield = ({ ref, numStars }: Props) => {
   );
 };
 
-export default Starfield;
+export default memo(Starfield, () => true);
