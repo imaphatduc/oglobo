@@ -10,6 +10,7 @@ export default async function Home() {
   const file = readFileSync("./geodata/50m_countries.json", "utf8");
 
   const { features } = JSON.parse(file) as GeoData;
+  console.log(features[227]);
 
   return (
     <main>

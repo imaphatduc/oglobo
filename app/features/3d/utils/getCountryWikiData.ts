@@ -94,9 +94,16 @@ export const getCountryWikiData = async (id: string) => {
               Object.keys(CONTINENTS)
                 .map((c) => c.toLowerCase())
                 .includes(info.vi.toLowerCase())) ||
-            info.vi.includes("Mỹ")
+            info.vi.includes("Mỹ") ||
+            info.en.toLowerCase() === "insular oceania"
         )
-        .map((info: any) => (info.vi.includes("Mỹ") ? "Châu Mỹ" : info.vi));
+        .map((info: any) =>
+          info.vi.includes("Mỹ")
+            ? "Châu Mỹ"
+            : info.en.toLowerCase() === "insular oceania"
+            ? "Châu Đại Dương"
+            : info.vi
+        );
   } catch {
     continents = [];
   }
