@@ -4,7 +4,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import Globe from "./Globe";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Clock, Color, Points, Raycaster, Vector2 } from "three";
+import { Clock, Color, Points, Raycaster, Vector2, Vector3 } from "three";
 import {
   getCameraPosFromGlobeCoords,
   toGeoCoords,
@@ -79,18 +79,49 @@ const EarthScene = () => {
 
   const setCameraToLookAtCountry = () => {
     if (selectedCountry) {
-      const targetCountry = getCountry(selectedCountry?.idx);
       const distanceFromOrigin = camera.position.length();
-      const cameraTargetPos = getCameraPosFromGlobeCoords(
-        targetCountry.centerPoint,
-        distanceFromOrigin
+      const cameraTargetPos = new Vector3(
+        ...getCameraPosFromGlobeCoords(
+          selectedCountry.centerPoint,
+          distanceFromOrigin
+        )
       );
 
-      const tween = new Tween(camera.position)
-        .to({
-          x: cameraTargetPos[0],
-          y: cameraTargetPos[1],
-          z: cameraTargetPos[2],
+      const origin = new Vector3(0, 0, 0);
+
+      const getRotationParams = (pos: Vector3) => {
+        const vec = new Vector3().copy(pos).sub(origin);
+        const distance = vec.length();
+        const theta = Math.atan2(vec.x, vec.z);
+        const phi = Math.acos(vec.y / distance);
+        return { r: distance, theta, phi };
+      };
+
+      const getPosition = (theta: number, phi: number, radius: number) => {
+        return new Vector3(
+          radius * Math.sin(phi) * Math.sin(theta), // x
+          radius * Math.cos(phi), // y
+          radius * Math.sin(phi) * Math.cos(theta) // z
+        ).add(origin);
+      };
+
+      const shortestAngle = (start: number, end: number) => {
+        let delta = end - start;
+        if (delta > Math.PI) delta -= 2 * Math.PI;
+        if (delta < -Math.PI) delta += 2 * Math.PI;
+        return start + delta;
+      };
+
+      const start = getRotationParams(camera.position);
+      const end = getRotationParams(cameraTargetPos);
+      const adjustedEndTheta = shortestAngle(start.theta, end.theta);
+
+      const tween = new Tween(start)
+        .to({ ...end, theta: adjustedEndTheta })
+        .onUpdate(({ theta, phi, r }) => {
+          const pos = getPosition(theta, phi, r);
+          camera.position.set(pos.x, pos.y, pos.z);
+          camera.lookAt(origin);
         })
         .easing(Easing.Exponential.Out)
         .duration(2000)

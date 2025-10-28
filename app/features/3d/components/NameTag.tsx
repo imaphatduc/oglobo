@@ -16,7 +16,7 @@ interface Props {
 const NameTag = ({ country, hovering }: Props) => {
   const { scaleFactor, showCountryNames } = useUI();
 
-  const { centerPoint, countryArea } = getCountryGeoData(country, scaleFactor);
+  const { centerPoint, area } = getCountryGeoData(country, scaleFactor);
   const normal = new Vector3(...centerPoint).normalize();
 
   const up = new Vector3(0, 1, 0);
@@ -42,7 +42,7 @@ const NameTag = ({ country, hovering }: Props) => {
   });
 
   return (
-    ((showCountryNames && countryArea > 200000000000) || hovering) && (
+    ((showCountryNames && area > 200000000000) || hovering) && (
       <Text
         ref={textRef}
         maxWidth={10}

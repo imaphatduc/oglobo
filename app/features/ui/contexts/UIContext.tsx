@@ -16,7 +16,7 @@ interface UIContextType {
   scaleFactor: number;
   selectedContinent: string;
   setSelectedContinent: (d: string) => void;
-  getCountry: (idx: number) => SelectedCountry;
+  getCountry: (idx: number) => SelectedCountry | undefined;
   selectedCountry: SelectedCountry | undefined;
   selectCountry: (idx?: number) => void;
   sceneLoaded: boolean;
@@ -55,11 +55,15 @@ export function UIProvider({
   const [showCountryNames, setShowCountryNames] = useState(false);
 
   const getCountry = (idx: number) => {
-    return {
-      idx,
-      ...countries[idx],
-      ...getCountryGeoData(countries[idx], scaleFactor),
-    };
+    const country = countries[idx];
+
+    return country
+      ? {
+          idx,
+          ...country,
+          ...getCountryGeoData(country, scaleFactor),
+        }
+      : undefined;
   };
 
   const selectCountry = (idx?: number) => {
