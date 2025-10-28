@@ -85,25 +85,30 @@ export const getCountryWikiData = async (id: string) => {
 
   try {
     const rawContinents = claims.P30 && (await getExternals(claims.P30));
+
     continents =
       rawContinents &&
       rawContinents
-        .filter(
-          (info: any) =>
-            (info.vi &&
-              Object.keys(CONTINENTS)
-                .map((c) => c.toLowerCase())
-                .includes(info.vi.toLowerCase())) ||
-            info.vi.includes("Mỹ") ||
-            info.en.toLowerCase() === "insular oceania"
-        )
-        .map((info: any) =>
-          info.vi.includes("Mỹ")
-            ? "Châu Mỹ"
-            : info.en.toLowerCase() === "insular oceania"
-            ? "Châu Đại Dương"
-            : info.vi
-        );
+        .map((info: any) => {
+          if (info.vi) {
+            if (info.vi.includes("Mỹ")) {
+              return "Châu Mỹ";
+            }
+
+            if (info.en.toLowerCase() === "insular oceania") {
+              return "Châu Đại Dương";
+            }
+
+            const continent = Object.keys(CONTINENTS).find(
+              (c) => c.toLowerCase() === info.vi.toLowerCase()
+            );
+
+            if (continent) {
+              return continent;
+            }
+          }
+        })
+        .filter((d: any) => !!d);
   } catch {
     continents = [];
   }
