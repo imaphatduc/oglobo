@@ -1,7 +1,6 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { GeoFeature } from "@/app/types";
 import { Infographic, Control, useUI } from "../features/ui";
 import { EarthScene } from "../features/3d";
 import LoadingScreen from "./LoadingScreen";
@@ -15,11 +14,7 @@ import {
 } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
 
-interface Props {
-  features: GeoFeature[];
-}
-
-const App = ({ features: countries }: Props) => {
+const App = () => {
   const { sceneLoaded } = useUI();
 
   const [mounted, setMounted] = useState(false);
@@ -50,7 +45,7 @@ const App = ({ features: countries }: Props) => {
         <Panel className="h-screen relative">
           <LoadingScreen sceneLoaded={sceneLoaded} />
           <Canvas>
-            <EarthScene countries={countries} />
+            <EarthScene />
           </Canvas>
         </Panel>
 
@@ -79,7 +74,7 @@ const App = ({ features: countries }: Props) => {
 
         {showInfographic && (
           <Panel defaultSize={isMobile ? 35 : 28} minSize={isMobile ? 15 : 28}>
-            <Infographic countries={countries} />
+            <Infographic />
           </Panel>
         )}
       </PanelGroup>

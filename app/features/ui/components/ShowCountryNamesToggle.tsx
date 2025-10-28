@@ -1,4 +1,4 @@
-import ToggleButton from "../../3d/components/ToggleButton";
+import ToggleButton from "./ToggleButton";
 import { useUI } from "../contexts/UIContext";
 
 const ShowCountryNamesToggle = () => {

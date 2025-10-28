@@ -2,9 +2,8 @@
 
 import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { GeoFeature } from "@/app/types";
 import Globe from "./Globe";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Clock, Color, Points, Raycaster, Vector2, Vector3 } from "three";
 import { toGeoCoords, toGlobeCoords } from "../utils";
 import { Easing, Group, Tween } from "@tweenjs/tween.js";
@@ -14,12 +13,8 @@ import { useSearchParams } from "next/navigation";
 import Countries from "./Countries";
 import { booleanPointInPolygon } from "@turf/turf";
 
-interface Props {
-  countries: GeoFeature[];
-}
-
-const EarthScene = ({ countries }: Props) => {
-  const { sceneLoaded, setSelectedCountryIdx } = useUI();
+const EarthScene = () => {
+  const { countries, sceneLoaded, selectCountry } = useUI();
 
   const scaleFactor = 2.5;
 
@@ -55,7 +50,7 @@ const EarthScene = ({ countries }: Props) => {
     }
   };
 
-  const selectCountry = () => {
+  const handleCountryMeshClick = () => {
     const point = getRaycastPoint(pointer);
 
     if (point) {
@@ -66,7 +61,7 @@ const EarthScene = ({ countries }: Props) => {
       );
 
       if (selectedCountryIdx) {
-        setSelectedCountryIdx(selectedCountryIdx);
+        selectCountry(selectedCountryIdx);
       }
     }
   };
@@ -149,26 +144,28 @@ const EarthScene = ({ countries }: Props) => {
 
   const [cameraInit, setCameraInit] = useState(false);
 
-  const cameraInitPos = useMemo(() => {
+  const getCurrentPoint = () => {
     const lon = parseFloat(searchParams.get("lon") || "0");
     const lat = parseFloat(searchParams.get("lat") || "0");
     const coords = toGlobeCoords(lon, lat, scaleFactor);
     const magnitude = new Vector3(...coords).length();
 
-    const cameraInitPos = [
+    const currentPoint = [
       (5 * coords[0]) / magnitude,
       (5 * coords[1]) / magnitude,
       (5 * coords[2]) / magnitude,
     ] as [number, number, number];
 
-    return cameraInitPos;
-  }, []);
+    return currentPoint;
+  };
 
   const setupCamera = () => {
+    const currentPoint = getCurrentPoint();
+
     camera.position.set(
-      cameraInitPos[0] * 200,
-      cameraInitPos[1] * 200,
-      cameraInitPos[2] * 200
+      currentPoint[0] * 200,
+      currentPoint[1] * 200,
+      currentPoint[2] * 200
     );
 
     setCameraInit(true);
@@ -183,8 +180,10 @@ const EarthScene = ({ countries }: Props) => {
   ///////////////////////////////
 
   const animateSceneIntro = () => {
+    const currentPoint = getCurrentPoint();
+
     const tween = new Tween(camera.position)
-      .to({ x: cameraInitPos[0], y: cameraInitPos[1], z: cameraInitPos[2] })
+      .to({ x: currentPoint[0], y: currentPoint[1], z: currentPoint[2] })
       .easing(Easing.Exponential.Out)
       .delay(600)
       .duration(2000)
@@ -204,12 +203,8 @@ const EarthScene = ({ countries }: Props) => {
       <>
         <ambientLight intensity={1} />
         <directionalLight position={[5, 3, 5]} intensity={1} />
-        <Globe ref={globeRef} scaleFactor={scaleFactor} />
-        <Countries
-          countries={countries}
-          scaleFactor={scaleFactor}
-          selectCountry={selectCountry}
-        />
+        <Globe ref={globeRef} />
+        <Countries handleCountryMeshClick={handleCountryMeshClick} />
         <Starfield ref={starfieldRef} numStars={numStars} />
         <OrbitControls
           ref={controlsRef}

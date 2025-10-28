@@ -1,17 +1,14 @@
-import { GeoFeature } from "@/app/types";
 import CountryBorder from "./CountryBorder";
 import CountryMesh from "./CountryMesh";
 import { useUI } from "../../ui";
 import { useRef } from "react";
 
 interface Props {
-  countries: GeoFeature[];
-  scaleFactor: number;
-  selectCountry: () => void;
+  handleCountryMeshClick: () => void;
 }
 
-const Countries = ({ countries, scaleFactor, selectCountry }: Props) => {
-  const { selectedContinent, setSceneLoaded } = useUI();
+const Countries = ({ handleCountryMeshClick }: Props) => {
+  const { countries, selectedContinent, setSceneLoaded } = useUI();
 
   const numRenderedCountry = useRef(0);
 
@@ -30,14 +27,9 @@ const Countries = ({ countries, scaleFactor, selectCountry }: Props) => {
             country.properties.CONTINENTS?.map((c) => c.toLowerCase()).includes(
               selectedContinent.toLowerCase()
             )) && (
-            <group key={i} onClick={selectCountry}>
-              <CountryBorder country={country} scaleFactor={scaleFactor} />
-              <CountryMesh
-                onRendered={onCountriesRendered}
-                countries={countries}
-                country={country}
-                scaleFactor={scaleFactor}
-              />
+            <group key={i} onClick={handleCountryMeshClick}>
+              <CountryBorder country={country} />
+              <CountryMesh onRendered={onCountriesRendered} country={country} />
             </group>
           )
       )}

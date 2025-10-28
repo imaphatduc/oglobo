@@ -1,4 +1,4 @@
-import { memo, Ref, useMemo } from "react";
+import { memo, Ref } from "react";
 import { AdditiveBlending, Points, TextureLoader } from "three";
 import getStarfield from "../utils/getStarfield";
 

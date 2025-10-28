@@ -1,12 +1,16 @@
 "use client";
 
 import { createContext, use, useState, ReactNode } from "react";
+import { getCountryGeoData } from "../../3d/utils";
+import { GeoFeature } from "@/app/types";
 
 interface UIContextType {
+  countries: GeoFeature[];
+  scaleFactor: number;
   selectedContinent: string;
   setSelectedContinent: (d: string) => void;
-  selectedCountryIdx?: number;
-  setSelectedCountryIdx: (d?: number) => void;
+  selectedCountry: GeoFeature | undefined;
+  selectCountry: (idx?: number) => void;
   sceneLoaded: boolean;
   setSceneLoaded: (d: boolean) => void;
   showCountryNames: boolean;
@@ -24,10 +28,16 @@ export function useUI() {
 }
 
 interface UIProviderProps {
+  countries: GeoFeature[];
+  scaleFactor: number;
   children: ReactNode;
 }
 
-export function UIProvider({ children }: UIProviderProps) {
+export function UIProvider({
+  countries,
+  scaleFactor,
+  children,
+}: UIProviderProps) {
   const [selectedContinent, setSelectedContinent] = useState("");
 
   const [selectedCountryIdx, setSelectedCountryIdx] = useState<number>();
@@ -36,15 +46,31 @@ export function UIProvider({ children }: UIProviderProps) {
 
   const [showCountryNames, setShowCountryNames] = useState(false);
 
+  const selectCountry = (idx?: number) => {
+    if (!idx) {
+      setSelectedCountryIdx(undefined);
+      return;
+    }
+
+    const {} = getCountryGeoData(countries[idx], scaleFactor);
+    setSelectedCountryIdx(idx);
+  };
+
+  const selectedCountry = selectedCountryIdx
+    ? countries[selectedCountryIdx]
+    : undefined;
+
   const toggleCountryNames = () => {
     setShowCountryNames((prev) => !prev);
   };
 
   const value = {
+    countries,
+    scaleFactor,
     selectedContinent,
     setSelectedContinent,
-    selectedCountryIdx,
-    setSelectedCountryIdx,
+    selectedCountry,
+    selectCountry,
     sceneLoaded,
     setSceneLoaded,
     showCountryNames,

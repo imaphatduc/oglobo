@@ -2,13 +2,15 @@ import { GeoFeature } from "@/app/types";
 import { Line } from "@react-three/drei";
 import { useMemo } from "react";
 import { toGlobeCoords, uniformCoords } from "../utils";
+import { useUI } from "../../ui";
 
 interface Props {
   country: GeoFeature;
-  scaleFactor: number;
 }
 
-const CountryBorder = ({ country, scaleFactor }: Props) => {
+const CountryBorder = ({ country }: Props) => {
+  const { scaleFactor } = useUI();
+
   const boundary = useMemo(
     () =>
       uniformCoords(country).map((land) =>

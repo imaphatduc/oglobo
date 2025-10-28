@@ -1,12 +1,7 @@
-import { GeoFeature } from "@/app/types";
 import { useUI } from "../contexts/UIContext";
 
-interface Props {
-  countries: GeoFeature[];
-}
-
-const CountriesList = ({ countries }: Props) => {
-  const { selectedContinent, setSelectedCountryIdx } = useUI();
+const CountriesList = () => {
+  const { countries, selectedContinent, selectCountry } = useUI();
 
   const continentalCountries = selectedContinent
     ? countries
@@ -36,7 +31,7 @@ const CountriesList = ({ countries }: Props) => {
           <div
             key={country.idx}
             className="space-y-3 cursor-pointer"
-            onClick={() => setSelectedCountryIdx(country.idx)}
+            onClick={() => selectCountry(country.idx)}
           >
             {country.properties.FLAG && (
               <img

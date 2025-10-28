@@ -1,41 +1,22 @@
 "use client";
 
-import { area, centroid } from "@turf/turf";
-import { uniformCoords } from "../utils/uniformCoords";
-import { toGlobeCoords } from "../utils/toGlobeCoords";
 import { Euler, Matrix4, Vector3 } from "three";
 import { GeoFeature } from "@/app/types";
 import { Text } from "@react-three/drei";
 import { useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useUI } from "../../ui";
+import { getCountryGeoData } from "../utils/getCountryGeoData";
 
 interface Props {
   country: GeoFeature;
-  scaleFactor: number;
   hovering: boolean;
 }
 
-const NameTag = ({ country, scaleFactor, hovering }: Props) => {
-  const { showCountryNames } = useUI();
+const NameTag = ({ country, hovering }: Props) => {
+  const { scaleFactor, showCountryNames } = useUI();
 
-  const uniformedCountry = uniformCoords(country);
-
-  let countryArea = 0;
-  const firstLandGeoData = {
-    type: "Polygon" as const,
-    coordinates: uniformedCountry[0],
-  };
-  const largestLandGeoData = uniformedCountry.reduce((acc, land) => {
-    const landGeoData = { type: "Polygon" as const, coordinates: land };
-    const landArea = area(landGeoData);
-    countryArea += landArea;
-    return landArea > area(acc) ? landGeoData : acc;
-  }, firstLandGeoData);
-
-  const [lonCenter, latCenter] =
-    centroid(largestLandGeoData).geometry.coordinates;
-  const centerPoint = toGlobeCoords(lonCenter, latCenter, scaleFactor);
+  const { centerPoint, countryArea } = getCountryGeoData(country, scaleFactor);
   const normal = new Vector3(...centerPoint).normalize();
 
   const up = new Vector3(0, 1, 0);

@@ -13,8 +13,8 @@ export default async function Home() {
 
   return (
     <main>
-      <UIProvider>
-        <App features={features} />
+      <UIProvider countries={features} scaleFactor={2.5}>
+        <App />
       </UIProvider>
     </main>
   );

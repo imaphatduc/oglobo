@@ -15,18 +15,11 @@ import { useUI } from "../../ui";
 
 interface Props {
   onRendered: () => void;
-  countries: GeoFeature[];
   country: GeoFeature;
-  scaleFactor: number;
 }
 
-const CountryMesh = ({
-  onRendered,
-  countries,
-  country,
-  scaleFactor,
-}: Props) => {
-  const { selectedCountryIdx } = useUI();
+const CountryMesh = ({ onRendered, country }: Props) => {
+  const { scaleFactor, selectedCountry } = useUI();
 
   useEffect(() => {
     onRendered();
@@ -56,9 +49,8 @@ const CountryMesh = ({
   const [hovering, setHovering] = useState(false);
 
   const renderedColor = new Color(country.properties.COLOR).multiplyScalar(
-    country.properties.WIKIDATAID ===
-      (selectedCountryIdx ? countries[selectedCountryIdx] : undefined)
-        ?.properties.WIKIDATAID || hovering
+    country.properties.WIKIDATAID === selectedCountry?.properties.WIKIDATAID ||
+      hovering
       ? 0.3
       : 1
   );
@@ -68,11 +60,7 @@ const CountryMesh = ({
       onPointerOver={() => setHovering(true)}
       onPointerLeave={() => setHovering(false)}
     >
-      <NameTag
-        country={country}
-        scaleFactor={scaleFactor}
-        hovering={hovering}
-      />
+      <NameTag country={country} hovering={hovering} />
       {geometries.map((geometry, i) => (
         <mesh key={i} geometry={geometry}>
           <meshBasicMaterial color={renderedColor} side={DoubleSide} />

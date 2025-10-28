@@ -1,12 +1,14 @@
 import { EdgesGeometry, SphereGeometry } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
+import { useUI } from "../../ui";
 
 interface Props {
   ref: any;
-  scaleFactor: number;
 }
 
-const Globe = ({ ref, scaleFactor }: Props) => {
+const Globe = ({ ref }: Props) => {
+  const { scaleFactor } = useUI();
+
   const raycastGlobeGeometry = new SphereGeometry(scaleFactor, 32, 16);
   const globeGeometry = new SphereGeometry(scaleFactor * 0.95, 32, 16).rotateX(
     degToRad(23.5)
