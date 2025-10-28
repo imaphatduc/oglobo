@@ -21,5 +21,5 @@ export const getCountryGeoData = (country: GeoFeature, scaleFactor: number) => {
   const [lonCenter, latCenter] =
     centroid(largestLandGeoData).geometry.coordinates;
   const centerPoint = toGlobeCoords(lonCenter, latCenter, scaleFactor);
-  return { centerPoint, countryArea };
+  return { centerPoint, area: countryArea };
 };

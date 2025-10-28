@@ -4,8 +4,12 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import Globe from "./Globe";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Clock, Color, Points, Raycaster, Vector2, Vector3 } from "three";
-import { toGeoCoords, toGlobeCoords } from "../utils";
+import { Clock, Color, Points, Raycaster, Vector2 } from "three";
+import {
+  getCameraPosFromGlobeCoords,
+  toGeoCoords,
+  toGlobeCoords,
+} from "../utils";
 import { Easing, Group, Tween } from "@tweenjs/tween.js";
 import Starfield from "./Starfield";
 import { useUI } from "../../ui";
@@ -14,7 +18,8 @@ import Countries from "./Countries";
 import { booleanPointInPolygon } from "@turf/turf";
 
 const EarthScene = () => {
-  const { countries, sceneLoaded, selectCountry } = useUI();
+  const { countries, sceneLoaded, selectedCountry, selectCountry, getCountry } =
+    useUI();
 
   const scaleFactor = 2.5;
 
@@ -35,6 +40,8 @@ const EarthScene = () => {
   const starfieldRef = useRef<Points>(null);
 
   ///////////////////////////////
+  /// UTILS
+  ///////////////////////////////
 
   const getRaycastPoint = (from: Vector2) => {
     if (!globeRef.current) return;
@@ -49,6 +56,10 @@ const EarthScene = () => {
       return [lon, lat] as [number, number];
     }
   };
+
+  ///////////////////////////////
+  /// HANDLE COUNTRY SELECTION
+  ///////////////////////////////
 
   const handleCountryMeshClick = () => {
     const point = getRaycastPoint(pointer);
@@ -66,6 +77,33 @@ const EarthScene = () => {
     }
   };
 
+  const setCameraToLookAtCountry = () => {
+    if (selectedCountry) {
+      const targetCountry = getCountry(selectedCountry?.idx);
+      const distanceFromOrigin = camera.position.length();
+      const cameraTargetPos = getCameraPosFromGlobeCoords(
+        targetCountry.centerPoint,
+        distanceFromOrigin
+      );
+
+      const tween = new Tween(camera.position)
+        .to({
+          x: cameraTargetPos[0],
+          y: cameraTargetPos[1],
+          z: cameraTargetPos[2],
+        })
+        .easing(Easing.Exponential.Out)
+        .duration(2000)
+        .start();
+
+      group.add(tween);
+    }
+  };
+
+  useEffect(() => {
+    setCameraToLookAtCountry();
+  }, [selectedCountry?.idx]);
+
   ///////////////////////////////
   /// EARTH NAVIGATION CONTROL
   ///////////////////////////////
@@ -76,7 +114,6 @@ const EarthScene = () => {
     const point = getRaycastPoint(new Vector2(0, 0));
 
     if (point) {
-      console.log(point);
       const [lon, lat] = point;
 
       const params = new URLSearchParams(window.location.search);
@@ -144,28 +181,25 @@ const EarthScene = () => {
 
   const [cameraInit, setCameraInit] = useState(false);
 
-  const getCurrentPoint = () => {
+  const getCameraInitialPos = () => {
     const lon = parseFloat(searchParams.get("lon") || "0");
     const lat = parseFloat(searchParams.get("lat") || "0");
-    const coords = toGlobeCoords(lon, lat, scaleFactor);
-    const magnitude = new Vector3(...coords).length();
 
-    const currentPoint = [
-      (5 * coords[0]) / magnitude,
-      (5 * coords[1]) / magnitude,
-      (5 * coords[2]) / magnitude,
-    ] as [number, number, number];
+    const cameraTargetPos = getCameraPosFromGlobeCoords(
+      toGlobeCoords(lon, lat, scaleFactor),
+      5
+    );
 
-    return currentPoint;
+    return cameraTargetPos;
   };
 
   const setupCamera = () => {
-    const currentPoint = getCurrentPoint();
+    const cameraInitPos = getCameraInitialPos();
 
     camera.position.set(
-      currentPoint[0] * 200,
-      currentPoint[1] * 200,
-      currentPoint[2] * 200
+      cameraInitPos[0] * 200,
+      cameraInitPos[1] * 200,
+      cameraInitPos[2] * 200
     );
 
     setCameraInit(true);
@@ -180,10 +214,10 @@ const EarthScene = () => {
   ///////////////////////////////
 
   const animateSceneIntro = () => {
-    const currentPoint = getCurrentPoint();
+    const cameraInitPos = getCameraInitialPos();
 
     const tween = new Tween(camera.position)
-      .to({ x: currentPoint[0], y: currentPoint[1], z: currentPoint[2] })
+      .to({ x: cameraInitPos[0], y: cameraInitPos[1], z: cameraInitPos[2] })
       .easing(Easing.Exponential.Out)
       .delay(600)
       .duration(2000)

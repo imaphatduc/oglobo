@@ -3,13 +3,21 @@
 import { createContext, use, useState, ReactNode } from "react";
 import { getCountryGeoData } from "../../3d/utils";
 import { GeoFeature } from "@/app/types";
+import { V3 } from "../../3d/types";
+
+type SelectedCountry = GeoFeature & {
+  idx: number;
+  centerPoint: V3;
+  area: number;
+};
 
 interface UIContextType {
   countries: GeoFeature[];
   scaleFactor: number;
   selectedContinent: string;
   setSelectedContinent: (d: string) => void;
-  selectedCountry: GeoFeature | undefined;
+  getCountry: (idx: number) => SelectedCountry;
+  selectedCountry: SelectedCountry | undefined;
   selectCountry: (idx?: number) => void;
   sceneLoaded: boolean;
   setSceneLoaded: (d: boolean) => void;
@@ -46,18 +54,25 @@ export function UIProvider({
 
   const [showCountryNames, setShowCountryNames] = useState(false);
 
+  const getCountry = (idx: number) => {
+    return {
+      idx,
+      ...countries[idx],
+      ...getCountryGeoData(countries[idx], scaleFactor),
+    };
+  };
+
   const selectCountry = (idx?: number) => {
     if (!idx) {
       setSelectedCountryIdx(undefined);
       return;
     }
 
-    const {} = getCountryGeoData(countries[idx], scaleFactor);
     setSelectedCountryIdx(idx);
   };
 
   const selectedCountry = selectedCountryIdx
-    ? countries[selectedCountryIdx]
+    ? getCountry(selectedCountryIdx)
     : undefined;
 
   const toggleCountryNames = () => {
@@ -69,6 +84,7 @@ export function UIProvider({
     scaleFactor,
     selectedContinent,
     setSelectedContinent,
+    getCountry,
     selectedCountry,
     selectCountry,
     sceneLoaded,
