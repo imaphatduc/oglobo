@@ -21,7 +21,7 @@ export const LoadingScreen = ({ sceneLoaded }: Props) => {
   return (
     !timedout && (
       <div
-        className="absolute z-10 w-full h-full flex flex-col justify-center items-center space-y-3"
+        className="absolute z-10 w-full h-full flex flex-col justify-center items-center space-y-3 bg-black"
         style={{
           opacity: !sceneLoaded ? 1 : 0,
           transition: "opacity 0.5s ease-in-out",

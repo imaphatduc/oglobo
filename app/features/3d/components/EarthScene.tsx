@@ -263,7 +263,6 @@ export const EarthScene = () => {
     const tween = new Tween(camera.position)
       .to({ x: cameraInitPos[0], y: cameraInitPos[1], z: cameraInitPos[2] })
       .easing(Easing.Exponential.Out)
-      .delay(600)
       .duration(2000)
       .start();
 
