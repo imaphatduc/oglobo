@@ -25,7 +25,7 @@ export const DropdownSelect = ({
         id="select"
         value={value}
         onChange={onChange}
-        className="block px-2 py-2 rounded-md shadow-md bg-neutral-600 h-fit focus:ring-0 focus:outline-none"
+        className="block p-2 rounded-t-md shadow-md bg-neutral-600 max-w-32 h-auto focus:ring-0 focus:outline-none"
       >
         <option value="">{defaultValue}</option>
 
