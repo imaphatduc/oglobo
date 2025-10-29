@@ -2,6 +2,10 @@ export type GeoFeature = {
   type: "Feature";
   properties: {
     WIKIDATAID: string;
+    /**
+     * id of the country on World Bank
+     */
+    WB_A3: string;
     NAME: string;
     NAME_VI: string;
     FORMAL_EN: string;

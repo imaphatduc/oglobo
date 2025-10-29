@@ -11,11 +11,11 @@ const extractArea = (P2046: WikidataClaim[]): Area => {
   return area;
 };
 
-export const getArea = (P2046: WikidataClaim[]): Area => {
-  let area = extractArea(P2046);
+export const getArea = (P2046?: WikidataClaim[]): Area => {
+  let area: GeoFeature["properties"]["AREA"];
 
   try {
-    area = P2046 && getArea(P2046);
+    area = P2046 && extractArea(P2046);
   } catch {
     area = undefined;
   }

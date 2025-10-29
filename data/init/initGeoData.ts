@@ -32,6 +32,7 @@ export const initGeoData = async () => {
         type: "Feature",
         properties: {
           WIKIDATAID: country.properties.WIKIDATAID,
+          WB_A3: country.properties.WB_A3,
           NAME: country.properties.NAME,
           NAME_VI: country.properties.NAME_VI,
           FORMAL_EN: country.properties.FORMAL_EN,
