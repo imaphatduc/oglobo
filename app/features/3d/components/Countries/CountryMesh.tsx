@@ -17,10 +17,11 @@ import { NameTag } from "./NameTag";
 interface Props {
   onRendered: () => void;
   country: GeoFeature;
+  value?: number;
   color?: Color;
 }
 
-export const CountryMesh = ({ onRendered, country, color }: Props) => {
+export const CountryMesh = ({ onRendered, country, value, color }: Props) => {
   const { globeRadius, selectedCountry } = useApp();
 
   useEffect(() => {
@@ -62,10 +63,16 @@ export const CountryMesh = ({ onRendered, country, color }: Props) => {
 
   return (
     <group
-      onPointerOver={() => setHovering(true)}
-      onPointerLeave={() => setHovering(false)}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        setHovering(true);
+      }}
+      onPointerLeave={(e) => {
+        e.stopPropagation();
+        setHovering(false);
+      }}
     >
-      <NameTag country={country} hovering={hovering} />
+      <NameTag country={country} hovering={hovering} value={value} />
       {geometries.map((geometry, i) => (
         <mesh key={i} geometry={geometry}>
           <meshBasicMaterial color={color ?? renderedColor} side={DoubleSide} />

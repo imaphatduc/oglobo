@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { Text } from "@react-three/drei";
+import { Html, Text } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Euler, Matrix4, Vector3 } from "three";
 import { useApp } from "@/app/contexts";
@@ -11,9 +11,10 @@ import { getCountryMeasurements } from "../../lib";
 interface Props {
   country: GeoFeature;
   hovering: boolean;
+  value?: number;
 }
 
-export const NameTag = ({ country, hovering }: Props) => {
+export const NameTag = ({ country, hovering, value }: Props) => {
   const { globeRadius, showCountryNames } = useApp();
 
   const { centerPoint, area } = getCountryMeasurements(country, globeRadius);
@@ -41,8 +42,21 @@ export const NameTag = ({ country, hovering }: Props) => {
     textRef.current.scale.set(scale, scale, scale);
   });
 
+  if (hovering) {
+    return (
+      <Html
+        className="bg-neutral-950 min-w-32 h-fit p-2 text-xs rounded-md shadow-lg border border-[#d16014]"
+        position={centerPoint}
+      >
+        <p className="uppercase">{country.properties.NAME_VI}</p>
+        <p>{value && value > 0 ? value : "Không có dữ liệu"}</p>
+      </Html>
+    );
+  }
+
   return (
-    ((showCountryNames && area > 200000000000) || hovering) && (
+    showCountryNames &&
+    area > 200000000000 && (
       <Text
         ref={textRef}
         maxWidth={10}

@@ -19,7 +19,10 @@ export const Globe = ({ ref }: Props) => {
   return (
     <group>
       <LatLonGrid radius={globeRadius * 0.95} />
-      <mesh geometry={globeGeometry}>
+      <mesh
+        geometry={globeGeometry}
+        onPointerEnter={(e) => e.stopPropagation()}
+      >
         <meshBasicMaterial color={datasetKey ? "#dad7cd" : "#90d5ff"} />
       </mesh>
       <mesh ref={ref} geometry={raycastGlobeGeometry}>

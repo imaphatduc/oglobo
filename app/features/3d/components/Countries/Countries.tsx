@@ -5,14 +5,11 @@ import { CountryBorder } from "./CountryBorder";
 import { CountryMesh } from "./CountryMesh";
 
 interface Props {
-  colorsFromData: Promise<Color[]>;
+  countriesData: Promise<{ colors: Color[]; values: number[] }>;
   handleCountryMeshClick: () => void;
 }
 
-export const Countries = ({
-  colorsFromData,
-  handleCountryMeshClick,
-}: Props) => {
+export const Countries = ({ countriesData, handleCountryMeshClick }: Props) => {
   const { countries, selectedContinent, setSceneLoaded, datasetKey } = useApp();
 
   const numRenderedCountry = useRef(0);
@@ -25,7 +22,7 @@ export const Countries = ({
     }
   };
 
-  const resolvedColors = use(colorsFromData);
+  const { values, colors } = use(countriesData);
 
   return (
     <Suspense>
@@ -40,7 +37,8 @@ export const Countries = ({
               <CountryMesh
                 onRendered={onCountriesRendered}
                 country={country}
-                color={datasetKey ? resolvedColors[i] : undefined}
+                value={datasetKey ? values[i] : undefined}
+                color={datasetKey ? colors[i] : undefined}
               />
             </group>
           )

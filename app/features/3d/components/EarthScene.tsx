@@ -277,7 +277,7 @@ export const EarthScene = () => {
 
   ///////////////////////////////
 
-  const countriesColorsFromData = useMemo(async () => {
+  const countriesData = useMemo(async () => {
     const data = await getData(datasetKey);
 
     const values = countries.map((country) => {
@@ -292,7 +292,7 @@ export const EarthScene = () => {
 
     const colors = getCountriesColorsFromData(values);
 
-    return colors;
+    return { values, colors };
   }, [datasetKey]);
 
   return (
@@ -304,7 +304,7 @@ export const EarthScene = () => {
         <Suspense>
           <Countries
             handleCountryMeshClick={handleCountryMeshClick}
-            colorsFromData={countriesColorsFromData}
+            countriesData={countriesData}
           />
         </Suspense>
         <Starfield ref={starfieldRef} numStars={numStars} />
