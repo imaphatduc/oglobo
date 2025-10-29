@@ -17,7 +17,7 @@ import { NameTag } from "./NameTag";
 interface Props {
   onRendered: () => void;
   country: GeoFeature;
-  color?: string;
+  color?: Color;
 }
 
 export const CountryMesh = ({ onRendered, country, color }: Props) => {

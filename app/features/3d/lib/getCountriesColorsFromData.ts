@@ -3,7 +3,7 @@ import { Color } from "three";
 export function getCountriesColorsFromData(
   values: number[],
   baseColor = "#74c365"
-): string[] {
+): Color[] {
   const min = Math.min(...values);
   const max = Math.max(...values);
 
@@ -14,7 +14,7 @@ export function getCountriesColorsFromData(
 
   const colors = values.map((v) => {
     if (v === 0) {
-      return "#f0fff0";
+      return new Color(0xf0fff0);
     }
 
     const norm = normalize(v, min, max);
@@ -27,7 +27,7 @@ export function getCountriesColorsFromData(
     const gamma = 5;
     const factor = Math.pow(1 - norm, gamma);
     const colorNorm = new Color(baseColor).multiplyScalar(factor);
-    return "#" + colorNorm.getHexString();
+    return colorNorm;
   });
 
   return colors;

@@ -1,10 +1,11 @@
-import { Suspense, use, useMemo, useRef } from "react";
+import { Suspense, use, useRef } from "react";
+import { Color } from "three";
 import { useApp } from "@/app/contexts";
 import { CountryBorder } from "./CountryBorder";
 import { CountryMesh } from "./CountryMesh";
 
 interface Props {
-  colorsFromData: Promise<string[]>;
+  colorsFromData: Promise<Color[]>;
   handleCountryMeshClick: () => void;
 }
 
