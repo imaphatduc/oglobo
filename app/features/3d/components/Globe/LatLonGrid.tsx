@@ -13,7 +13,7 @@ export default function LatLonGrid({
   latStepDeg = 15,
   lonStepDeg = 15,
   segments = 128,
-  color = "#444",
+  color = "#000",
 }: Props) {
   const latLines = useMemo(() => {
     const lines: Float32Array[] = [];

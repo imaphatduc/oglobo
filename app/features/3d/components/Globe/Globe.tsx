@@ -20,7 +20,7 @@ export const Globe = ({ ref }: Props) => {
     <group>
       <LatLonGrid radius={globeRadius * 0.95} />
       <mesh geometry={globeGeometry}>
-        <meshBasicMaterial color={datasetKey ? "#fff" : "#90d5ff"} />
+        <meshBasicMaterial color={datasetKey ? "#dad7cd" : "#90d5ff"} />
       </mesh>
       <mesh ref={ref} geometry={raycastGlobeGeometry}>
         <meshStandardMaterial attach="material" transparent opacity={0} />
