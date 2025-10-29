@@ -1,21 +1,22 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
-import { Infographic, Control, useUI } from "../features/ui";
-import { EarthScene } from "../features/3d";
-import LoadingScreen from "./LoadingScreen";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useEffect, useState } from "react";
+import { useMediaQuery } from "react-responsive";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import {
   ChevronsDown,
   ChevronsLeft,
   ChevronsRight,
   ChevronsUp,
 } from "lucide-react";
-import { useMediaQuery } from "react-responsive";
+import { Canvas } from "@react-three/fiber";
+import { useApp } from "@/app/contexts";
+import { EarthScene } from "~/3d";
+import { Infographic, Control } from "~/gui";
+import { LoadingScreen } from "./LoadingScreen";
 
-const App = () => {
-  const { sceneLoaded } = useUI();
+export const App = () => {
+  const { sceneLoaded } = useApp();
 
   const [mounted, setMounted] = useState(false);
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
@@ -81,5 +82,3 @@ const App = () => {
     </div>
   );
 };
-
-export default App;

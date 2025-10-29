@@ -1,27 +1,27 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import Globe from "./Globe";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Clock, Color, Points, Raycaster, Vector2, Vector3 } from "three";
+import { Easing, Group, Tween } from "@tweenjs/tween.js";
+import { booleanPointInPolygon } from "@turf/turf";
+import { useApp } from "@/app/contexts";
 import {
   getCameraPosFromGlobeCoords,
+  getCountryMeasurements,
   toGeoCoords,
   toGlobeCoords,
-} from "../utils";
-import { Easing, Group, Tween } from "@tweenjs/tween.js";
-import Starfield from "./Starfield";
-import { useUI } from "../../ui";
-import { useSearchParams } from "next/navigation";
-import Countries from "./Countries";
-import { booleanPointInPolygon } from "@turf/turf";
+} from "../lib";
+import { Starfield } from "./Starfield";
+import { Globe } from "./Globe";
+import { Countries } from "./Countries";
 
-const EarthScene = () => {
-  const { countries, sceneLoaded, selectedCountry, selectCountry, getCountry } =
-    useUI();
+export const EarthScene = () => {
+  const { countries, sceneLoaded, selectedCountry, selectCountry } = useApp();
 
-  const scaleFactor = 2.5;
+  const globeRadius = 2.5;
 
   const globeRef = useRef(null);
 
@@ -79,12 +79,15 @@ const EarthScene = () => {
 
   const setCameraToLookAtCountry = () => {
     if (selectedCountry) {
+      const { centerPoint } = getCountryMeasurements(
+        selectedCountry,
+        globeRadius
+      );
+
       const distanceFromOrigin = camera.position.length();
+
       const cameraTargetPos = new Vector3(
-        ...getCameraPosFromGlobeCoords(
-          selectedCountry.centerPoint,
-          distanceFromOrigin
-        )
+        ...getCameraPosFromGlobeCoords(centerPoint, distanceFromOrigin)
       );
 
       const origin = new Vector3(0, 0, 0);
@@ -217,7 +220,7 @@ const EarthScene = () => {
     const lat = parseFloat(searchParams.get("lat") || "0");
 
     const cameraTargetPos = getCameraPosFromGlobeCoords(
-      toGlobeCoords(lon, lat, scaleFactor),
+      toGlobeCoords(lon, lat, globeRadius),
       5
     );
 
@@ -282,5 +285,3 @@ const EarthScene = () => {
     )
   );
 };
-
-export default EarthScene;

@@ -1,6 +1,6 @@
-import { V3 } from "./V3";
+import { Vector3 } from "three";
 
 export type RingBufferInfo = {
-  vertices: V3[];
+  vertices: Vector3[];
   triangles: number[];
 };

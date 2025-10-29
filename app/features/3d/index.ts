@@ -1,3 +1,3 @@
-import EarthScene from "./components/EarthScene";
+import { EarthScene } from "./components";
 
 export { EarthScene };

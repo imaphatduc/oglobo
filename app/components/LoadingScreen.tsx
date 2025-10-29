@@ -7,7 +7,7 @@ interface Props {
   sceneLoaded: boolean;
 }
 
-const LoadingScreen = ({ sceneLoaded }: Props) => {
+export const LoadingScreen = ({ sceneLoaded }: Props) => {
   const [timedout, setTimedout] = useState(false);
 
   useEffect(() => {
@@ -33,5 +33,3 @@ const LoadingScreen = ({ sceneLoaded }: Props) => {
     )
   );
 };
-
-export default LoadingScreen;
