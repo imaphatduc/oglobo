@@ -1,7 +1,8 @@
 "use client";
 
-import { createContext, use, useState, ReactNode } from "react";
+import { createContext, use, useState, ReactNode, useEffect } from "react";
 import { GeoFeature } from "@/data";
+import { DatasetKey, getData } from "~/dataset";
 
 type SelectedCountry = GeoFeature & {
   idx: number;
@@ -19,6 +20,8 @@ interface AppContextType {
   setSceneLoaded: (d: boolean) => void;
   showCountryNames: boolean;
   toggleCountryNames: () => void;
+  datasetKey: DatasetKey | "";
+  setDatasetKey: (d: DatasetKey | "") => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -50,6 +53,8 @@ export function AppProvider({
 
   const [showCountryNames, setShowCountryNames] = useState(false);
 
+  const [datasetKey, setDatasetKey] = useState<DatasetKey | "">("");
+
   const getCountry = (idx: number) => {
     const country = countries[idx];
 
@@ -78,6 +83,13 @@ export function AppProvider({
     setShowCountryNames((prev) => !prev);
   };
 
+  useEffect(() => {
+    const _ = async () => {
+      const data = await getData(datasetKey);
+    };
+    _();
+  }, [datasetKey]);
+
   const value = {
     countries,
     globeRadius,
@@ -90,6 +102,8 @@ export function AppProvider({
     setSceneLoaded,
     showCountryNames,
     toggleCountryNames,
+    datasetKey,
+    setDatasetKey,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
