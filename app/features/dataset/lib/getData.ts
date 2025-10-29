@@ -1,4 +1,3 @@
-import axios from "axios";
 import { DatasetKey, WBEducationExpenditure } from "../types";
 import { datasets } from "./datasets";
 
@@ -11,9 +10,9 @@ export const getData = async (datasetKey: DatasetKey | "") => {
 
   const url = `/api/dataset?indicator=${dataset.code}`;
 
-  const res = await axios.get(url);
+  const res = await fetch(url);
 
-  const data = res.data;
+  const data = await res.json();
 
   return data as WBEducationExpenditure[];
 };
