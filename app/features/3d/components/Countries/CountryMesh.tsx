@@ -13,16 +13,24 @@ import { uniformCoords } from "@/app/lib";
 import { GeoFeature } from "@/data";
 import { toGlobeCoords } from "../../lib";
 import { NameTag } from "./NameTag";
+import { DataPad } from "./DataPad";
 
 interface Props {
   onRendered: () => void;
   country: GeoFeature;
+  unit?: string;
   value?: number;
   color?: Color;
 }
 
-export const CountryMesh = ({ onRendered, country, value, color }: Props) => {
-  const { globeRadius, selectedCountry } = useApp();
+export const CountryMesh = ({
+  onRendered,
+  country,
+  unit,
+  value,
+  color,
+}: Props) => {
+  const { globeRadius, selectedCountry, datasetKey } = useApp();
 
   useEffect(() => {
     onRendered();
@@ -72,7 +80,16 @@ export const CountryMesh = ({ onRendered, country, value, color }: Props) => {
         setHovering(false);
       }}
     >
-      <NameTag country={country} hovering={hovering} value={value} />
+      {datasetKey && unit && value ? (
+        <DataPad
+          country={country}
+          hovering={hovering}
+          unit={unit}
+          value={value}
+        />
+      ) : (
+        <NameTag country={country} hovering={hovering} />
+      )}
       {geometries.map((geometry, i) => (
         <mesh key={i} geometry={geometry}>
           <meshBasicMaterial color={color ?? renderedColor} side={DoubleSide} />

@@ -3,7 +3,7 @@ import { datasets } from "./datasets";
 
 export const getData = async (datasetKey: DatasetKey | "") => {
   if (!datasetKey) {
-    return [];
+    return undefined;
   }
 
   const dataset = datasets[datasetKey];
@@ -14,5 +14,8 @@ export const getData = async (datasetKey: DatasetKey | "") => {
 
   const data = await res.json();
 
-  return data as WBEducationExpenditure[];
+  return { data, unit: dataset.unit } as {
+    data: WBEducationExpenditure[];
+    unit: string;
+  };
 };
