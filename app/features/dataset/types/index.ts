@@ -1,3 +1,4 @@
 import { DatasetKey } from "./DatasetKey.type";
+import { WBEducationExpenditure } from "./WBEducationExpenditure.type";
 
-export type { DatasetKey };
+export type { DatasetKey, WBEducationExpenditure };

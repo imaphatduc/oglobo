@@ -1,6 +1,5 @@
 import axios from "axios";
-import { DatasetKey } from "../types";
-import { WBEducationExpenditure } from "../types/WBEducationExpenditure.type";
+import { DatasetKey, WBEducationExpenditure } from "../types";
 import { datasets } from "./datasets";
 
 export const getData = async (datasetKey: DatasetKey | "") => {

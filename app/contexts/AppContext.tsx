@@ -1,8 +1,8 @@
 "use client";
 
-import { createContext, use, useState, ReactNode, useEffect } from "react";
+import { createContext, use, useState, ReactNode } from "react";
 import { GeoFeature } from "@/data";
-import { DatasetKey, getData } from "~/dataset";
+import { DatasetKey } from "~/dataset";
 
 type SelectedCountry = GeoFeature & {
   idx: number;
@@ -82,13 +82,6 @@ export function AppProvider({
   const toggleCountryNames = () => {
     setShowCountryNames((prev) => !prev);
   };
-
-  useEffect(() => {
-    const _ = async () => {
-      const data = await getData(datasetKey);
-    };
-    _();
-  }, [datasetKey]);
 
   const value = {
     countries,

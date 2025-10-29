@@ -3,23 +3,33 @@
 import { useSearchParams } from "next/navigation";
 import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Clock, Color, Points, Raycaster, Vector2, Vector3 } from "three";
 import { Easing, Group, Tween } from "@tweenjs/tween.js";
 import { booleanPointInPolygon } from "@turf/turf";
 import { useApp } from "@/app/contexts";
+import { getData } from "~/dataset";
 import {
   getCameraPosFromGlobeCoords,
   getCountryMeasurements,
   toGeoCoords,
   toGlobeCoords,
+  getCountriesColorsFromData,
 } from "../lib";
 import { Starfield } from "./Starfield";
 import { Globe } from "./Globe";
 import { Countries } from "./Countries";
 
 export const EarthScene = () => {
-  const { countries, sceneLoaded, selectedCountry, selectCountry } = useApp();
+  const { countries, sceneLoaded, selectedCountry, selectCountry, datasetKey } =
+    useApp();
 
   const globeRadius = 2.5;
 
@@ -266,13 +276,38 @@ export const EarthScene = () => {
     animateSceneIntro();
   }, [sceneLoaded, cameraInit]);
 
+  ///////////////////////////////
+
+  const countriesColorsFromData = useMemo(async () => {
+    const data = await getData(datasetKey);
+
+    const values = countries.map((country) => {
+      const countryData = data.find(
+        (d) => d.REF_AREA === country.properties.WB_A3
+      );
+
+      const value = countryData ? parseFloat(countryData.OBS_VALUE) : 0;
+
+      return value;
+    });
+
+    const colors = getCountriesColorsFromData(values);
+
+    return colors;
+  }, [datasetKey]);
+
   return (
     cameraInit && (
       <>
         <ambientLight intensity={1} />
         <directionalLight position={[5, 3, 5]} intensity={1} />
         <Globe ref={globeRef} />
-        <Countries handleCountryMeshClick={handleCountryMeshClick} />
+        <Suspense>
+          <Countries
+            handleCountryMeshClick={handleCountryMeshClick}
+            colorsFromData={countriesColorsFromData}
+          />
+        </Suspense>
         <Starfield ref={starfieldRef} numStars={numStars} />
         <OrbitControls
           ref={controlsRef}

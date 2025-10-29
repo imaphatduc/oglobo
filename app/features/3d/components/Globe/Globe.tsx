@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const Globe = ({ ref }: Props) => {
-  const { globeRadius } = useApp();
+  const { globeRadius, datasetKey } = useApp();
 
   const raycastGlobeGeometry = new SphereGeometry(globeRadius, 128, 64);
 
@@ -20,7 +20,7 @@ export const Globe = ({ ref }: Props) => {
     <group>
       <LatLonGrid radius={globeRadius * 0.95} />
       <mesh geometry={globeGeometry}>
-        <meshBasicMaterial color="#90d5ff" />
+        <meshBasicMaterial color={datasetKey ? "#fff" : "#90d5ff"} />
       </mesh>
       <mesh ref={ref} geometry={raycastGlobeGeometry}>
         <meshStandardMaterial attach="material" transparent opacity={0} />

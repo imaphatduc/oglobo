@@ -1,14 +1,18 @@
-import { useRef } from "react";
+import { Suspense, use, useMemo, useRef } from "react";
 import { useApp } from "@/app/contexts";
 import { CountryBorder } from "./CountryBorder";
 import { CountryMesh } from "./CountryMesh";
 
 interface Props {
+  colorsFromData: Promise<string[]>;
   handleCountryMeshClick: () => void;
 }
 
-export const Countries = ({ handleCountryMeshClick }: Props) => {
-  const { countries, selectedContinent, setSceneLoaded } = useApp();
+export const Countries = ({
+  colorsFromData,
+  handleCountryMeshClick,
+}: Props) => {
+  const { countries, selectedContinent, setSceneLoaded, datasetKey } = useApp();
 
   const numRenderedCountry = useRef(0);
 
@@ -20,8 +24,10 @@ export const Countries = ({ handleCountryMeshClick }: Props) => {
     }
   };
 
+  const resolvedColors = use(colorsFromData);
+
   return (
-    <>
+    <Suspense>
       {countries.map(
         (country, i) =>
           (selectedContinent === "" ||
@@ -30,10 +36,14 @@ export const Countries = ({ handleCountryMeshClick }: Props) => {
             )) && (
             <group key={i} onClick={handleCountryMeshClick}>
               <CountryBorder country={country} />
-              <CountryMesh onRendered={onCountriesRendered} country={country} />
+              <CountryMesh
+                onRendered={onCountriesRendered}
+                country={country}
+                color={datasetKey ? resolvedColors[i] : undefined}
+              />
             </group>
           )
       )}
-    </>
+    </Suspense>
   );
 };
