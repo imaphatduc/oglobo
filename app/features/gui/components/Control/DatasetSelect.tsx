@@ -10,7 +10,7 @@ export const DatasetSelect = () => {
       label="Hiện dữ liệu"
       value={datasetKey}
       onChange={(e) => setDatasetKey(e.target.value as any)}
-      options={Object.keys(datasets)}
+      options={datasets.map((d) => d.desc_vi)}
     />
   );
 };

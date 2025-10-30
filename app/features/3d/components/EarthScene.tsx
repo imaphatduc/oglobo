@@ -15,7 +15,7 @@ import { Clock, Color, Points, Raycaster, Vector2, Vector3 } from "three";
 import { Easing, Group, Tween } from "@tweenjs/tween.js";
 import { booleanPointInPolygon } from "@turf/turf";
 import { useApp } from "@/app/contexts";
-import { getData } from "~/dataset";
+import { getDataClientSide } from "../../dataset/lib/getDataClientSide";
 import {
   getCameraPosFromGlobeCoords,
   getCountryMeasurements,
@@ -278,25 +278,25 @@ export const EarthScene = () => {
   ///////////////////////////////
 
   const countriesDataPromise = useMemo(async () => {
-    const info = await getData(datasetKey);
+    const res = await getDataClientSide(datasetKey);
 
-    if (!info) return;
+    if (!res) return;
 
-    const { data, unit } = info;
+    const { dataset, data } = res;
 
     const values = countries.map((country) => {
       const countryData = data.find(
-        (d) => d.REF_AREA === country.properties.WB_A3
+        (d: any) => d.countryId === country.properties.WB_A3
       );
 
-      const value = countryData ? parseFloat(countryData.OBS_VALUE) : 0;
+      const value = countryData ? parseFloat(countryData.value) : 0;
 
       return value;
     });
 
     const colors = getCountriesColorsFromData(values);
 
-    return { unit, values, colors };
+    return { unit: dataset.unit, values, colors };
   }, [datasetKey]);
 
   return (

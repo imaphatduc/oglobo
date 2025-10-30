@@ -1,4 +1,4 @@
 import { datasets } from "./datasets";
-import { getData } from "./getData";
+import { getDataClientSide } from "./getDataClientSide";
 
-export { datasets, getData };
+export { datasets, getDataClientSide };

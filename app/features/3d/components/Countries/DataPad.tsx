@@ -24,7 +24,9 @@ export const DataPad = ({ country, hovering, unit, value }: Props) => {
         <p className="uppercase">{country.properties.NAME_VI}</p>
         {datasetKey && (
           <p>
-            {value && value > 0 ? `${value} (${unit})` : "Không có dữ liệu"}
+            {value && value > 0
+              ? `${value.toFixed(2)} (${unit})`
+              : "Không có dữ liệu"}
           </p>
         )}
       </Html>

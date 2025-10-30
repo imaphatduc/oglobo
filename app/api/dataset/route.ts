@@ -1,27 +1,28 @@
-// export const dynamic = "force-static";
-
+import { datasets } from "~/dataset";
 import { NextResponse } from "next/server";
+import { getData_WB } from "./getData_WB";
+import { getData_IMF } from "./getData_IMF";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
 
   const year = searchParams.get("year") ?? "2020";
 
-  const indicator = searchParams.get("indicator");
+  const code = searchParams.get("code");
 
-  if (!indicator) {
+  if (!code) {
     return NextResponse.json({ data: [] });
   }
 
-  const url = `https://data360api.worldbank.org/data360/data?DATABASE_ID=WB_WDI&INDICATOR=${indicator}&TIME_PERIOD=${year}&skip=0`;
+  let data;
 
-  const res = await fetch(url, {
-    headers: {
-      accept: "application/json",
-    },
-  });
+  if (code.startsWith("WB")) {
+    data = await getData_WB(code, year);
+  }
 
-  const { value: data } = await res.json();
+  if (code.startsWith("IMF")) {
+    data = getData_IMF(code, year);
+  }
 
-  return NextResponse.json(data);
+  return NextResponse.json({ data });
 }

@@ -1,4 +1,4 @@
-import { DatasetKey } from "./DatasetKey.type";
-import { WBEducationExpenditure } from "./WBEducationExpenditure.type";
+import { WB_WDI_SE_XPD_TOTL_GD_ZS } from "./WB/WB_WDI_SE_XPD_TOTL_GD_ZS";
+import { IMF_CPI, IMF_CPI_SECTOR } from "./IMF/IMF_CPI";
 
-export type { DatasetKey, WBEducationExpenditure };
+export type { WB_WDI_SE_XPD_TOTL_GD_ZS, IMF_CPI, IMF_CPI_SECTOR };

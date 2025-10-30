@@ -2,7 +2,7 @@
 
 import { createContext, use, useState, ReactNode } from "react";
 import { GeoFeature } from "@/data";
-import { DatasetKey } from "~/dataset";
+import { datasets } from "~/dataset";
 
 type SelectedCountry = GeoFeature & {
   idx: number;
@@ -20,8 +20,8 @@ interface AppContextType {
   setSceneLoaded: (d: boolean) => void;
   showCountryNames: boolean;
   toggleCountryNames: () => void;
-  datasetKey: DatasetKey | "";
-  setDatasetKey: (d: DatasetKey | "") => void;
+  datasetKey: string;
+  setDatasetKey: (d: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -53,7 +53,7 @@ export function AppProvider({
 
   const [showCountryNames, setShowCountryNames] = useState(false);
 
-  const [datasetKey, setDatasetKey] = useState<DatasetKey | "">("");
+  const [datasetKey, setDatasetKey] = useState<string>("");
 
   const getCountry = (idx: number) => {
     const country = countries[idx];

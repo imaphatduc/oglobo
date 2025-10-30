@@ -1,5 +1,7 @@
+import { WB_WDI_SE_XPD_TOTL_GD_ZS } from "@/app/features/dataset";
+
 // prettier-ignore
-export type WBEducationExpenditure = {
+type RAW = {
   OBS_VALUE: string;              // e.g. "4.09057"
   TIME_FORMAT: string;            // e.g. "P1Y"
   UNIT_MULT: number;              // e.g. 0
@@ -25,3 +27,24 @@ export type WBEducationExpenditure = {
   UNIT_MEASURE: string;           // e.g. "PT_GDP"
   UNIT_TYPE: string | null;       // e.g. null
 }
+
+export const getData_WB = async (
+  code: string,
+  year: string
+): Promise<WB_WDI_SE_XPD_TOTL_GD_ZS[]> => {
+  const url = `https://data360api.worldbank.org/data360/data?DATABASE_ID=WB_WDI&INDICATOR=${code}&TIME_PERIOD=${year}&skip=0`;
+
+  const res = await fetch(url, {
+    headers: {
+      accept: "application/json",
+    },
+  });
+
+  const { value: data } = await res.json();
+
+  return data.map((d: RAW) => ({
+    countryId: d.REF_AREA,
+    value: d.OBS_VALUE,
+    year,
+  }));
+};
