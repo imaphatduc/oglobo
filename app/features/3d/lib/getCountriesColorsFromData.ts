@@ -4,8 +4,9 @@ export function getCountriesColorsFromData(
   values: number[],
   baseColor = "#97a87a"
 ): Color[] {
-  const min = Math.min(...values);
-  const max = Math.max(...values);
+  const min = Math.min(...values.filter((d) => d > 0));
+  const max = Math.max(...values.filter((d) => d > 0));
+  console.log(min, max);
 
   function normalize(value: number, min: number, max: number): number {
     if (min === max) return 0;

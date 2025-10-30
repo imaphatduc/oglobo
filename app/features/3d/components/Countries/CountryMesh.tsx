@@ -80,7 +80,7 @@ export const CountryMesh = ({
         setHovering(false);
       }}
     >
-      {datasetKey && unit && value ? (
+      {datasetKey && unit ? (
         <DataPad
           country={country}
           hovering={hovering}

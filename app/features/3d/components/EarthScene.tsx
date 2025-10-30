@@ -290,6 +290,9 @@ export const EarthScene = () => {
       );
 
       const value = countryData ? parseFloat(countryData.value) : 0;
+      if (isNaN(value)) {
+        console.log(typeof countryData.value);
+      }
 
       return value;
     });

@@ -7,7 +7,7 @@ interface Props {
   country: GeoFeature;
   hovering: boolean;
   unit: string;
-  value: number;
+  value?: number;
 }
 
 export const DataPad = ({ country, hovering, unit, value }: Props) => {
@@ -21,7 +21,7 @@ export const DataPad = ({ country, hovering, unit, value }: Props) => {
         className="bg-neutral-950 min-w-32 h-fit p-2 text-xs rounded-md shadow-lg border border-[#d16014]"
         position={centerPoint}
       >
-        <p className="uppercase">{country.properties.NAME_VI}</p>
+        <p className="uppercase mb-1">{country.properties.NAME_VI}</p>
         {datasetKey && (
           <p>
             {value && value > 0

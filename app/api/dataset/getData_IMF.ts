@@ -7,7 +7,7 @@ type RAW = {
   COICOP_1999: IMF_CPI_SECTOR;
   FREQUENCY: "Annual";
 } & {
-  [year: string]: number;
+  [year: string]: string | number;
 };
 
 export const getData_IMF = (code: string, year: string): IMF_CPI[] => {
@@ -19,6 +19,6 @@ export const getData_IMF = (code: string, year: string): IMF_CPI[] => {
     countryId: d["COUNTRY.ID"],
     sector: d["COICOP_1999"],
     year,
-    value: d[`${year}`],
+    value: typeof d[year] === "string" ? 0 : d[year],
   }));
 };
