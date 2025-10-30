@@ -25,7 +25,7 @@ export function getCountriesColorsFromData(
         - gamma < 1 → makes midtones brighter
         - gamma > 1 → makes midtones darker, more contrast
      */
-    const gamma = 5 * ((max - min) / 500 + 1);
+    const gamma = 5 * ((max - min) / 600 + 1);
     const factor = Math.pow(1 - norm, gamma);
     const colorNorm = new Color(baseColor).multiplyScalar(factor);
     return colorNorm;
