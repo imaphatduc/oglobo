@@ -215,6 +215,7 @@ export const EarthScene = () => {
 
   useFrame(({ clock }) => {
     group.update();
+    camera.lookAt(0, 0, 0);
 
     flickeringStarfield(clock);
   });
@@ -290,9 +291,6 @@ export const EarthScene = () => {
       );
 
       const value = countryData ? parseFloat(countryData.value) : 0;
-      if (isNaN(value)) {
-        console.log(typeof countryData.value);
-      }
 
       return value;
     });
